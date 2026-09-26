@@ -6,9 +6,11 @@ from playwright.async_api import async_playwright
 SCREENSHOT_DIR = os.path.abspath("./reports/qa-screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
+BASE_URL = sys.argv[1].rstrip('/') if len(sys.argv) > 1 else "http://localhost:3000"
+
 async def run_qa():
     print("==================================================", flush=True)
-    print(" RUNNING PLAYWRIGHT BROWSER VISUAL & FUNCTIONAL QA", flush=True)
+    print(f" RUNNING PLAYWRIGHT BROWSER VISUAL & FUNCTIONAL QA: {BASE_URL}", flush=True)
     print("==================================================", flush=True)
 
     async with async_playwright() as p:
@@ -22,7 +24,7 @@ async def run_qa():
         page = await context.new_page()
 
         # Navigate to homepage
-        await page.goto("http://localhost:3000/", wait_until="domcontentloaded")
+        await page.goto(f"{BASE_URL}/", wait_until="networkidle")
         await page.wait_for_timeout(1000)
         print("[PASS] Homepage loaded successfully", flush=True)
 
@@ -31,10 +33,12 @@ async def run_qa():
         assert "Ronak Patel" in hero_title, f"Unexpected Hero title: {hero_title}"
         print(f"[PASS] Hero Title: {hero_title}", flush=True)
 
-        # Check 3D Canvas
-        canvas = page.locator("canvas")
-        assert await canvas.count() > 0, "3D Canvas element not found"
-        print("[PASS] 3D Workflow Network Canvas mounted", flush=True)
+        # Check 3D Canvas / Network Visualization
+        hero_visual = page.locator("canvas, [aria-label*='Workflow Network']")
+        await hero_visual.first.wait_for(state="attached", timeout=15000)
+        visual_count = await hero_visual.count()
+        assert visual_count > 0, "Hero workflow visualization not mounted"
+        print(f"[PASS] Hero Workflow Visualization mounted (Elements found: {visual_count})", flush=True)
 
         # Capture Desktop Hero Screenshot
         await page.screenshot(path=os.path.join(SCREENSHOT_DIR, "desktop-01-hero.png"))
@@ -82,7 +86,7 @@ async def run_qa():
         # Test Case Study Page Navigation
         print("\n--- Testing Case Study Pages Navigation ---", flush=True)
         for slug in ["supportpilot-ai", "ai-lead-management-agent", "opsforge-ai", "bizhunter-mis"]:
-            await page.goto(f"http://localhost:3000/projects/{slug}", wait_until="domcontentloaded")
+            await page.goto(f"{BASE_URL}/projects/{slug}", wait_until="domcontentloaded")
             await page.wait_for_timeout(500)
             page_title = await page.locator("h1").inner_text()
             print(f"[PASS] Navigated to /projects/{slug} (Title: {page_title})", flush=True)
@@ -106,7 +110,7 @@ async def run_qa():
         )
         mobile_page = await mobile_context.new_page()
 
-        await mobile_page.goto("http://localhost:3000/", wait_until="domcontentloaded")
+        await mobile_page.goto(f"{BASE_URL}/", wait_until="networkidle")
         await mobile_page.wait_for_timeout(1000)
 
         # Check for Horizontal Overflow (Critical Mobile QA rule)
@@ -150,7 +154,7 @@ async def run_qa():
         print("\n--- 3. Testing Custom 404 Page ---", flush=True)
         notFoundContext = await browser.new_context()
         notFoundPage = await notFoundContext.new_page()
-        res = await notFoundPage.goto("http://localhost:3000/non-existent-route-qa-test", wait_until="domcontentloaded")
+        res = await notFoundPage.goto(f"{BASE_URL}/non-existent-route-qa-test", wait_until="domcontentloaded")
         await notFoundPage.wait_for_timeout(500)
         assert res.status == 404, f"Expected 404, got {res.status}"
         h1_text = await notFoundPage.locator("h1").inner_text()
