@@ -42,14 +42,31 @@ export const WorkflowNetwork3D: React.FC = () => {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    // Check WebGL availability
+    // Test WebGL availability on an offscreen test canvas to avoid corrupting the real canvas context
     try {
-      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      const testCanvas = document.createElement("canvas");
+      const gl = testCanvas.getContext("webgl") || testCanvas.getContext("experimental-webgl");
       if (!gl) {
         setWebGLSupported(false);
         return;
       }
     } catch {
+      setWebGLSupported(false);
+      return;
+    }
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    } catch (err) {
+      console.warn("WebGL initialization failed, falling back to 2D view:", err);
       setWebGLSupported(false);
       return;
     }
@@ -65,15 +82,6 @@ export const WorkflowNetwork3D: React.FC = () => {
       100
     );
     camera.position.set(0, 0, 7.5);
-
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(container.clientWidth, container.clientHeight);
 
     // Group for all rotating elements
     const networkGroup = new THREE.Group();
