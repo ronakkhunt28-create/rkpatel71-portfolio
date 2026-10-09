@@ -24,6 +24,10 @@ for (const path of ["/sitemap.xml", "/robots.txt"]) {
   checks += 3;
 }
 const home = await (await fetch(base)).text();
+const manifestPath = home.match(/<link rel="manifest" href="([^"]+)"/)?.[1];
+assert.ok(manifestPath, "Metadata advertises a manifest");
+assert.equal((await fetch(base + manifestPath)).status, 200, "Advertised manifest exists");
+checks += 2;
 assert.ok(home.includes(`"url":"${canonical}"`), "Person structured data URL");
 assert.ok(home.includes('href="mailto:khuntronak5@gmail.com"'), "Direct email action");
 assert.ok(home.includes("Copy Email Address"), "Copy email interaction");
