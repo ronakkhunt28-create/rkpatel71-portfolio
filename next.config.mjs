@@ -3,7 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    formats: ['image/avif', 'image/webp'],
+    // Keep optimization on WebP until the bundled AVIF parser is patched.
+    formats: ['image/webp'],
   },
   async redirects() {
     return [

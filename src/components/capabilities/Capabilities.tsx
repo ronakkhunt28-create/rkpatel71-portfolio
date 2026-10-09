@@ -1,101 +1,11 @@
-import React from "react";
+"use client";
+
+import { useState } from "react";
+import { ArrowRight, Check } from "lucide-react";
 import { capabilities } from "@/data/capabilities";
-import { Bot, Workflow, Database, ShieldCheck, UserCheck, Lock, CheckCircle2 } from "lucide-react";
 
-export const Capabilities: React.FC = () => {
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case "Bot":
-        return <Bot className="w-5 h-5 text-accent" />;
-      case "Workflow":
-        return <Workflow className="w-5 h-5 text-accent" />;
-      case "Database":
-        return <Database className="w-5 h-5 text-accent" />;
-      case "ShieldCheck":
-        return <ShieldCheck className="w-5 h-5 text-accent" />;
-      case "UserCheck":
-        return <UserCheck className="w-5 h-5 text-accent" />;
-      case "Lock":
-        return <Lock className="w-5 h-5 text-accent" />;
-      default:
-        return <Workflow className="w-5 h-5 text-accent" />;
-    }
-  };
-
-  return (
-    <section id="capabilities" className="py-20 md:py-28 border-b border-surface-border/60 bg-surface-300/40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="space-y-12">
-          {/* Section Header */}
-          <div className="max-w-3xl space-y-3">
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-accent">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-              Core Competencies &amp; System Archetypes
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-text-primary tracking-tight">
-              What I Build
-            </h2>
-            <p className="text-base sm:text-lg text-text-secondary leading-relaxed">
-              Production-grade architectural capabilities engineered for business process automation, operational resilience, and non-hallucinatory AI execution.
-            </p>
-          </div>
-
-          {/* Capabilities Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {capabilities.map((item) => (
-              <div
-                key={item.id}
-                className="group relative rounded-2xl bg-surface-100/70 border border-surface-border p-6 hover:border-accent/40 hover:bg-surface-100 transition-all duration-300 flex flex-col justify-between shadow-card"
-              >
-                <div className="space-y-4">
-                  {/* Icon & Title */}
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2.5 rounded-xl bg-surface-200 border border-surface-border group-hover:border-accent/40 transition-colors">
-                      {getIcon(item.iconName)}
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-text-primary tracking-tight group-hover:text-accent transition-colors">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-text-tertiary font-mono">{item.tagline}</p>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                    {item.description}
-                  </p>
-
-                  {/* Key Signals */}
-                  <div className="space-y-1.5 pt-2 border-t border-surface-border/60">
-                    <span className="text-[11px] font-mono text-text-tertiary uppercase tracking-wider block">
-                      Verification Signals
-                    </span>
-                    {item.keySignals.map((signal, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-xs text-text-secondary">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                        <span>{signal}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Technologies Badges */}
-                <div className="pt-5 flex flex-wrap gap-1.5">
-                  {item.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-0.5 rounded-md bg-surface-200 border border-surface-border/80 text-[11px] font-mono text-text-secondary group-hover:text-text-primary transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+export function Capabilities() {
+  const [active, setActive] = useState(0);
+  const item = capabilities[active];
+  return <section id="capabilities" className="section-space border-b hairline"><div className="page-shell grid gap-12 lg:grid-cols-[.78fr_1.22fr]"><div><span className="eyebrow">Core capabilities</span><h2 className="section-title mt-5 text-balance">Systems, not<br/>AI theatre.</h2><p className="mt-6 max-w-md text-sm leading-7 text-slate-400">Demonstrated capabilities from shipped project code: deterministic boundaries around probabilistic models, explicit evidence, and reversible human control.</p><div className="mt-10 space-y-1" role="tablist" aria-label="Engineering capabilities">{capabilities.map((cap,i)=><button role="tab" aria-selected={active===i} key={cap.id} onClick={()=>setActive(i)} className={`group flex w-full items-center justify-between border-b hairline py-4 text-left text-sm transition ${active===i?"text-white":"text-slate-500 hover:text-slate-300"}`}><span><span className="mono mr-4 text-[9px] text-slate-700">0{i+1}</span>{cap.title}</span><ArrowRight className={`size-3.5 transition ${active===i?"translate-x-0 text-[#63d9ff]":"-translate-x-2 opacity-0"}`}/></button>)}</div></div><div className="surface relative min-h-[500px] overflow-hidden rounded-3xl p-7 sm:p-10"><div className="absolute inset-0 grid-bg opacity-25"/><div className="relative"><span className="mono text-[10px] uppercase tracking-[.15em] text-[#63d9ff]">Capability 0{active+1}</span><h3 className="mt-6 max-w-xl text-3xl font-semibold tracking-[-.04em] sm:text-4xl">{item.title}</h3><p className="mt-3 text-sm font-medium text-slate-300">{item.tagline}</p><p className="mt-7 max-w-2xl text-sm leading-7 text-slate-400">{item.description}</p><div className="mt-10 border-t hairline pt-7"><p className="mono text-[9px] uppercase tracking-[.16em] text-slate-600">Evidence in the work</p><ul className="mt-5 grid gap-3 sm:grid-cols-2">{item.keySignals.map(signal=><li key={signal} className="flex items-start gap-3 rounded-xl border hairline bg-black/20 p-4 text-xs leading-5 text-slate-300"><Check className="mt-0.5 size-3.5 shrink-0 text-[#63d9ff]"/>{signal}</li>)}</ul></div><div className="mt-8 flex flex-wrap gap-2">{item.technologies.map(t=><span key={t} className="tech-pill mono">{t}</span>)}</div></div></div></div></section>;
+}

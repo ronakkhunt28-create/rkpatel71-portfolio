@@ -41,12 +41,10 @@ export const siteConfig: SiteConfig = {
     details: "Available for full-time, contract, and high-impact automation engineering opportunities.",
   },
   navigation: [
-    { name: "About", href: "#about" },
+    { name: "Work", href: "#projects" },
     { name: "Capabilities", href: "#capabilities" },
-    { name: "Projects", href: "#projects" },
-    { name: "Process", href: "#process" },
-    { name: "Skills", href: "#skills" },
-    { name: "Experience", href: "#experience" },
+    { name: "Method", href: "#workflow" },
+    { name: "About", href: "#experience" },
     { name: "Contact", href: "#contact" },
   ],
 };

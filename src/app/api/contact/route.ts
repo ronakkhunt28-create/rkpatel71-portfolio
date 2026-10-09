@@ -38,9 +38,17 @@ export async function POST(request: Request) {
     const resendApiKey = process.env.RESEND_API_KEY;
     const recipientEmail = process.env.CONTACT_EMAIL_TO || "khuntronak5@gmail.com";
 
+    if (!resendApiKey && process.env.VERCEL_ENV === "production") {
+      console.error("Contact delivery is unavailable: RESEND_API_KEY is not configured.");
+      return NextResponse.json(
+        { success: false, error: "Message delivery is unavailable. Please email directly." },
+        { status: 503 }
+      );
+    }
+
     if (resendApiKey) {
       try {
-        await fetch("https://api.resend.com/emails", {
+        const delivery = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -55,8 +63,15 @@ export async function POST(request: Request) {
             }\n\nMessage:\n${message}`,
           }),
         });
+        if (!delivery.ok) {
+          throw new Error(`Resend returned HTTP ${delivery.status}`);
+        }
       } catch (err) {
         console.error("Resend delivery failed:", err);
+        return NextResponse.json(
+          { success: false, error: "Message delivery failed. Please email directly." },
+          { status: 502 }
+        );
       }
     }
 

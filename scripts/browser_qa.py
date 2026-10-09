@@ -24,17 +24,17 @@ async def run_qa():
         page = await context.new_page()
 
         # Navigate to homepage
-        await page.goto(f"{BASE_URL}/", wait_until="networkidle")
+        await page.goto(f"{BASE_URL}/", wait_until="domcontentloaded")
         await page.wait_for_timeout(1000)
         print("[PASS] Homepage loaded successfully", flush=True)
 
         # Check Hero
         hero_title = await page.locator("h1").inner_text()
-        assert "Ronak Patel" in hero_title, f"Unexpected Hero title: {hero_title}"
+        assert "Engineering reliable" in hero_title, f"Unexpected Hero title: {hero_title}"
         print(f"[PASS] Hero Title: {hero_title}", flush=True)
 
         # Check 3D Canvas / Network Visualization
-        hero_visual = page.locator("canvas, [aria-label*='Workflow Network']")
+        hero_visual = page.locator("[aria-label='Conceptual AI automation architecture']")
         await hero_visual.first.wait_for(state="attached", timeout=15000)
         visual_count = await hero_visual.count()
         assert visual_count > 0, "Hero workflow visualization not mounted"
@@ -58,6 +58,31 @@ async def run_qa():
         await page.screenshot(path=os.path.join(SCREENSHOT_DIR, "desktop-03-skills.png"))
         print("[SAVED] reports/qa-screenshots/desktop-03-skills.png", flush=True)
 
+        # Verify interactive project gallery, capability, workflow, and process state changes.
+        first_project_image = page.locator("#projects article").first.locator("img").first
+        original_src = await first_project_image.get_attribute("src")
+        await page.locator("#projects article").first.get_by_role("tab", name="View screenshot 2: Ticket Details & Grounded RAG View").click()
+        updated_src = await first_project_image.get_attribute("src")
+        assert original_src != updated_src, "Project gallery did not update the displayed screenshot"
+        print("[PASS] Keyboard-accessible project gallery updates visual state", flush=True)
+
+        await page.get_by_role("tab", name="Prompt Defense & Tamper-Evident Auditing").click()
+        assert await page.get_by_text("Adversarial input screening and cryptographic audit trails").is_visible()
+        print("[PASS] Capability explorer updates selected panel", flush=True)
+
+        await page.locator("#workflow").get_by_role("button", name="Output + audit").click()
+        assert await page.locator("#workflow").get_by_text("Approved work dispatches once", exact=False).is_visible()
+        print("[PASS] Seven-stage workflow updates selected stage", flush=True)
+
+        await page.get_by_role("button", name="Open stage 10: Production Delivery").click()
+        assert await page.get_by_role("heading", name="Production Delivery").is_visible()
+        print("[PASS] Engineering process explorer updates selected stage", flush=True)
+
+        await page.emulate_media(reduced_motion="reduce")
+        reveal_duration = await page.locator(".reveal").first.evaluate("el => getComputedStyle(el).animationDuration")
+        assert reveal_duration in ["1e-05s", "0.00001s", "0.001ms", "0s"], f"Reduced motion override not applied: {reveal_duration}"
+        print("[PASS] prefers-reduced-motion override applied", flush=True)
+
         # Scroll to Contact Section & Test Form
         contact_section = page.locator("#contact")
         await contact_section.scroll_into_view_if_needed()
@@ -70,7 +95,7 @@ async def run_qa():
         await page.select_option("#inquiryType", "Role Opportunity")
         await page.fill("#message", "We are looking for an AI Automation Developer to lead our backend agent pipelines.")
         
-        btn = page.locator('button[type="submit"]')
+        btn = page.get_by_role("button", name="Send Message")
         async with page.expect_response("**/api/contact") as response_info:
             await btn.click()
         response = await response_info.value
@@ -87,13 +112,14 @@ async def run_qa():
         print("\n--- Testing Case Study Pages Navigation ---", flush=True)
         for slug in ["supportpilot-ai", "ai-lead-management-agent", "opsforge-ai", "bizhunter-mis"]:
             await page.goto(f"{BASE_URL}/projects/{slug}", wait_until="domcontentloaded")
-            await page.wait_for_timeout(500)
+            await page.wait_for_timeout(1200)
+            await page.evaluate("window.scrollTo(0, 0)")
             page_title = await page.locator("h1").inner_text()
             print(f"[PASS] Navigated to /projects/{slug} (Title: {page_title})", flush=True)
             await page.screenshot(path=os.path.join(SCREENSHOT_DIR, f"desktop-case-study-{slug}.png"))
 
             # Test Breadcrumb Return
-            breadcrumb_home = page.locator('text=Back to Home')
+            breadcrumb_home = page.get_by_text("Back to selected work", exact=True)
             await breadcrumb_home.click()
             await page.wait_for_timeout(500)
             print(f"[PASS] Breadcrumb back to Home confirmed from {slug}", flush=True)
@@ -101,16 +127,26 @@ async def run_qa():
         await context.close()
 
         # ----------------------------------------------------
-        # 2. MOBILE RESPONSIVENESS AUDIT (375 x 812 - iPhone)
+        # 2. RESPONSIVENESS AUDIT
         # ----------------------------------------------------
-        print("\n--- 2. Testing Mobile Responsiveness (375x812) ---", flush=True)
+        print("\n--- 2. Testing Responsive Widths ---", flush=True)
+        for width in [320, 375, 768, 1024, 1440, 1920]:
+            probe = await browser.new_context(viewport={"width": width, "height": 900})
+            probe_page = await probe.new_page()
+            await probe_page.goto(f"{BASE_URL}/", wait_until="domcontentloaded")
+            overflow = await probe_page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+            assert not overflow, f"Horizontal overflow at {width}px"
+            print(f"[PASS] No horizontal overflow at {width}px", flush=True)
+            await probe.close()
+
+        print("\n--- Testing Mobile Experience (375x812) ---", flush=True)
         mobile_context = await browser.new_context(
             viewport={"width": 375, "height": 812},
             user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
         )
         mobile_page = await mobile_context.new_page()
 
-        await mobile_page.goto(f"{BASE_URL}/", wait_until="networkidle")
+        await mobile_page.goto(f"{BASE_URL}/", wait_until="domcontentloaded")
         await mobile_page.wait_for_timeout(1000)
 
         # Check for Horizontal Overflow (Critical Mobile QA rule)

@@ -1,13 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { siteConfig } from "@/data/site";
 
 export const viewport: Viewport = {
-  themeColor: "#090a0f",
+  themeColor: "#080b10",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
 };
+
+const geistSans = Inter({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
+const geistMono = Roboto_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -115,14 +119,14 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} dark`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-background text-text-primary antialiased selection:bg-accent/30 selection:text-white flex flex-col justify-between">
+      <body className="min-h-screen flex flex-col justify-between">
         {children}
       </body>
     </html>

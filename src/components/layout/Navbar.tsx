@@ -1,181 +1,46 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowUpRight, FileDown, Menu, X } from "lucide-react";
 import { siteConfig } from "@/data/site";
-import { Menu, X, ArrowUpRight, FileDown, CheckCircle2 } from "lucide-react";
 
-export const Navbar: React.FC = () => {
+export function Navbar() {
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [copiedEmail, setCopiedEmail] = useState(false);
-
+  const [active, setActive] = useState("");
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  useEffect(() => {
+    const ids = siteConfig.navigation.map(item => item.href.slice(1));
+    const targets = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) setActive(`#${entry.target.id}`); });
+    }, { rootMargin: "-30% 0px -60% 0px" });
+    targets.forEach(target => observer.observe(target));
+    return () => observer.disconnect();
   }, []);
 
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(siteConfig.email);
-      setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2000);
-    } catch {
-      // Fallback
-    }
-  };
-
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/85 backdrop-blur-md border-b border-surface-border py-3 shadow-lg shadow-black/20"
-          : "bg-transparent py-5"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo / Monogram */}
-          <Link
-            href="/"
-            className="group flex items-center space-x-3 text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg p-1"
-            aria-label={`${siteConfig.name} - Home`}
-          >
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-surface-100 border border-surface-border group-hover:border-accent transition-colors shadow-inner">
-              <span className="font-mono font-bold text-accent tracking-wider text-sm">
-                {siteConfig.monogram}
-              </span>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-background"></span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-sm tracking-tight text-text-primary group-hover:text-accent transition-colors">
-                {siteConfig.name}
-              </span>
-              <span className="text-xs text-text-tertiary hidden sm:inline-block font-mono">
-                AI Automation
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav
-            className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-surface-100/70 border border-surface-border/60 rounded-full px-4 py-1.5 backdrop-blur-sm"
-            aria-label="Main Navigation"
-          >
-            {siteConfig.navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="px-3 py-1 text-xs lg:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-50/50 rounded-full transition-colors"
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* Right Action CTAs */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <button
-              onClick={handleCopyEmail}
-              className="text-xs font-mono text-text-tertiary hover:text-text-secondary transition-colors px-2 py-1 flex items-center gap-1.5"
-              title="Copy email to clipboard"
-            >
-              {copiedEmail ? (
-                <>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400 font-sans">Copied!</span>
-                </>
-              ) : (
-                <span>{siteConfig.email}</span>
-              )}
-            </button>
-
-            <a
-              href={siteConfig.resumeUrl}
-              download="Ronak_Patel_AI_Automation_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-accent text-slate-950 font-semibold text-xs px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors shadow-glow"
-            >
-              <FileDown className="w-3.5 h-3.5" />
-              <span>Resume</span>
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle Button */}
-          <div className="flex sm:hidden items-center space-x-2">
-            <a
-              href={siteConfig.resumeUrl}
-              download="Ronak_Patel_AI_Automation_Resume.pdf"
-              className="p-2 text-accent bg-surface-100 border border-surface-border rounded-lg text-xs"
-              aria-label="Download Resume"
-            >
-              <FileDown className="w-4 h-4" />
-            </a>
-
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-text-secondary hover:text-text-primary bg-surface-100 border border-surface-border rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              aria-expanded={mobileMenuOpen}
-              aria-label="Toggle Navigation Menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled || open ? "border-b hairline bg-[#080b10]/90 backdrop-blur-xl" : "bg-transparent"}`}>
+      <div className="page-shell flex h-[74px] items-center justify-between">
+        <Link href="/" className="group flex items-center gap-3 rounded-lg">
+          <span className="grid size-9 place-items-center rounded-lg border hairline bg-white/[.035] mono text-xs font-bold text-[#63d9ff] transition group-hover:border-cyan-300/50">RP</span>
+          <span className="hidden sm:block text-sm font-semibold tracking-tight">Ronak Patel <span className="block mono text-[9px] font-normal uppercase tracking-[.14em] text-slate-500">AI systems engineer</span></span>
+        </Link>
+        <nav aria-label="Primary navigation" className="hidden items-center gap-1 rounded-full border hairline bg-white/[.025] p-1 md:flex">
+          {siteConfig.navigation.map((item) => <a key={item.name} href={item.href} aria-current={active===item.href?"location":undefined} className={`rounded-full px-4 py-2 text-xs transition hover:bg-white/[.05] hover:text-white ${active===item.href?"bg-white/[.055] text-white":"text-slate-400"}`}>{item.name}</a>)}
+        </nav>
+        <div className="flex items-center gap-2">
+          <a href={siteConfig.resumeUrl} download className="hidden sm:inline-flex button-secondary !min-h-9 !rounded-lg !px-3 !py-2 text-xs"><FileDown className="size-3.5 text-[#63d9ff]" /> Resume</a>
+          <a href="#contact" className="hidden lg:inline-flex items-center gap-1.5 text-xs font-semibold text-[#63d9ff]">Let&apos;s talk <ArrowUpRight className="size-3.5" /></a>
+          <button aria-label="Toggle Navigation Menu" aria-expanded={open} onClick={() => setOpen(v => !v)} className="grid size-10 place-items-center rounded-lg border hairline bg-white/[.035] md:hidden">{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
         </div>
       </div>
-
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden bg-background/95 backdrop-blur-xl border-b border-surface-border px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col space-y-1">
-            {siteConfig.navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-100 rounded-lg transition-colors flex items-center justify-between"
-              >
-                <span>{item.name}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 opacity-40" />
-              </a>
-            ))}
-          </nav>
-
-          <div className="pt-3 border-t border-surface-border flex flex-col space-y-2">
-            <a
-              href={siteConfig.resumeUrl}
-              download="Ronak_Patel_AI_Automation_Resume.pdf"
-              className="w-full flex items-center justify-center space-x-2 bg-accent text-slate-950 font-semibold text-sm py-2.5 rounded-lg hover:bg-accent-hover transition-colors shadow-glow"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <FileDown className="w-4 h-4" />
-              <span>Download Verified Resume (PDF)</span>
-            </a>
-
-            <button
-              onClick={() => {
-                handleCopyEmail();
-                setTimeout(() => setMobileMenuOpen(false), 1200);
-              }}
-              className="w-full flex items-center justify-center space-x-2 bg-surface-100 border border-surface-border text-text-secondary text-xs py-2 rounded-lg"
-            >
-              {copiedEmail ? (
-                <>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Email Copied to Clipboard</span>
-                </>
-              ) : (
-                <span>Copy Email: {siteConfig.email}</span>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
+      {open && <nav className="page-shell flex flex-col gap-1 border-t hairline py-4 md:hidden" aria-label="Mobile navigation">{siteConfig.navigation.map(item => <a key={item.name} href={item.href} onClick={() => setOpen(false)} className="flex min-h-12 items-center justify-between rounded-lg px-3 text-sm text-slate-300 hover:bg-white/[.04]">{item.name}<ArrowUpRight className="size-4 text-slate-600" /></a>)}<a href={siteConfig.resumeUrl} download className="button-primary mt-2"><FileDown className="size-4" /> Download resume</a></nav>}
     </header>
   );
-};
+}
