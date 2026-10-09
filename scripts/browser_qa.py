@@ -3,7 +3,7 @@ import os
 import sys
 from playwright.async_api import async_playwright
 
-SCREENSHOT_DIR = os.path.abspath("./reports/qa-screenshots")
+SCREENSHOT_DIR = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else "./reports/qa-screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 BASE_URL = sys.argv[1].rstrip('/') if len(sys.argv) > 1 else "http://localhost:3000"
@@ -41,6 +41,12 @@ async def run_qa():
         visual_count = await hero_visual.count()
         assert visual_count > 0, "Hero workflow visualization not mounted"
         print(f"[PASS] Hero Workflow Visualization mounted (Elements found: {visual_count})", flush=True)
+        api_node = hero_visual.get_by_role("button", name="FastAPI: Validate", exact=True)
+        await api_node.focus()
+        await api_node.press("Space")
+        assert await api_node.get_attribute("aria-pressed") == "true"
+        assert await hero_visual.get_by_text("Pydantic contracts normalize", exact=False).is_visible()
+        print("[PASS] Hero node keyboard activation and selected state", flush=True)
 
         # Capture Desktop Hero Screenshot
         await page.screenshot(path=os.path.join(SCREENSHOT_DIR, "desktop-01-hero.png"))
@@ -67,6 +73,11 @@ async def run_qa():
         updated_src = await first_project_image.get_attribute("src")
         assert original_src != updated_src, "Project gallery did not update the displayed screenshot"
         print("[PASS] Keyboard-accessible project gallery updates visual state", flush=True)
+        selected_tab = page.locator("#projects article").first.locator('[role="tab"][aria-selected="true"]')
+        await selected_tab.focus()
+        await selected_tab.press("ArrowRight")
+        assert await page.locator("#projects article").first.get_by_role("tab", name="View screenshot 3: Knowledge Base Management").get_attribute("aria-selected") == "true"
+        print("[PASS] Gallery arrow-key navigation", flush=True)
 
         await page.get_by_role("tab", name="Prompt Defense & Tamper-Evident Auditing").click()
         assert await page.get_by_text("Adversarial input screening and cryptographic audit trails").is_visible()
@@ -108,6 +119,8 @@ async def run_qa():
             await page.wait_for_timeout(1200)
             await page.evaluate("window.scrollTo(0, 0)")
             page_title = await page.locator("h1").inner_text()
+            assert await page.get_by_role("heading", name="Evidence scope & validation limits").is_visible()
+            assert await page.get_by_role("navigation", name="Primary navigation").get_by_role("link", name="Contact", exact=True).get_attribute("href") == "/#contact"
             print(f"[PASS] Navigated to /projects/{slug} (Title: {page_title})", flush=True)
             await page.screenshot(path=os.path.join(SCREENSHOT_DIR, f"desktop-case-study-{slug}.png"))
 
@@ -187,9 +200,14 @@ async def run_qa():
         assert await mobile_page.evaluate("navigator.clipboard.readText()") == "khuntronak5@gmail.com"
         await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-04-contact.png"))
         print("[PASS] Mobile contact email/copy interactions", flush=True)
-        await mobile_page.goto(f"{BASE_URL}/projects/supportpilot-ai", wait_until="networkidle")
-        assert not await mobile_page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
-        await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-case-study-supportpilot-ai.png"))
+        await mobile_page.locator("#additional-work").scroll_into_view_if_needed()
+        await mobile_page.wait_for_timeout(800)
+        assert await mobile_page.get_by_text("Live validation pending · not production-ready", exact=True).is_visible()
+        await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-05-additional-work.png"), full_page=False)
+        for slug in ["supportpilot-ai", "ai-lead-management-agent", "opsforge-ai", "bizhunter-mis"]:
+            await mobile_page.goto(f"{BASE_URL}/projects/{slug}", wait_until="networkidle")
+            assert not await mobile_page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+            await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, f"mobile-case-study-{slug}.png"))
         assert not mobile_errors, f"Mobile runtime errors: {mobile_errors}"
         await mobile_context.close()
 

@@ -21,7 +21,10 @@ export interface ProjectItem {
   problem: string;
   solution: string;
   featured: boolean;
-  githubUrl: string;
+  githubUrl?: string;
+  status: string;
+  validationNote: string;
+  evidenceSources: Array<{ label: string; url: string }>;
   demoUrl?: string;
   technologies: string[];
   metrics: ProjectMetric[];
@@ -57,12 +60,15 @@ export const projects: ProjectItem[] = [
     subtitle: "AI-Assisted Customer Support & Operations Platform",
     category: "Featured AI Project",
     featured: true,
+    status: "Independent project · recorded integration validation",
+    validationNote: "79 tests, 85.92% coverage and 26 browser checks are historical results in the build report, not a fresh rerun or evidence of customer production deployment.",
+    evidenceSources: [{ label: "Build report · recorded results", url: "https://github.com/ronakkhunt28-create/supportpilot-ai/blob/054e15af72f8b8a8750170cf35946879341f9cde/BUILD_REPORT.md" }],
     description:
-      "Enterprise customer support and knowledge operations platform with deterministic SLA enforcement, multi-provider LLM failover, SQLite FTS5 lexical RAG, human-in-the-loop review gates, and n8n webhook automation.",
+      "Customer support engineering project with deterministic SLA prioritization, multi-provider LLM failover, SQLite FTS5 lexical retrieval, human review gates, and n8n webhook automation.",
     problem:
       "Customer support organizations face mounting ticket volumes, delayed SLA resolution times, and the acute risk of generative LLM hallucinations in sensitive billing, refund, or security inquiries.",
     solution:
-      "Combines FastAPI with deterministic P1–P4 SLA countdowns, local SQLite FTS5 lexical chunk retrieval, cascading LLM routing (Gemini 3.7 Flash → Groq → OpenRouter → Mock), and a mandatory human review queue for security, refund, or low-confidence tickets.",
+      "Combines FastAPI with deterministic P1–P4 SLA countdowns, local SQLite FTS5 lexical chunk retrieval, cascading LLM routing (Gemini → Groq → OpenRouter → Mock), and a human review queue for security, refund, or low-confidence tickets.",
     githubUrl: "https://github.com/ronakkhunt28-create/supportpilot-ai",
     technologies: [
       "Python 3.12",
@@ -70,7 +76,7 @@ export const projects: ProjectItem[] = [
       "SQLite FTS5",
       "SQLModel",
       "n8n",
-      "Google Gemini 3.7 Flash",
+      "Google Gemini API",
       "Groq API",
       "Playwright",
       "Pytest",
@@ -117,7 +123,7 @@ export const projects: ProjectItem[] = [
       {
         step: "05",
         title: "Cascading LLM Router",
-        description: "Drafts response using Gemini 3.7 Flash with automatic failover to Groq and OpenRouter.",
+        description: "Drafts responses using Gemini with fallback to Groq, OpenRouter, and explicitly identified mock mode.",
         technology: "Gemini / Groq / OpenRouter",
       },
       {
@@ -129,7 +135,7 @@ export const projects: ProjectItem[] = [
       {
         step: "07",
         title: "Persistence & Audit Log",
-        description: "Saves ticket, citations, and operator actions into immutable audit trail for full compliance.",
+        description: "Records tickets, citations, and operator actions in SQLite for application-level traceability; this is not a compliance certification or tamper-proof store.",
         technology: "SQLModel / SQLite",
       },
     ],
@@ -171,43 +177,46 @@ export const projects: ProjectItem[] = [
         {
           decision: "SQLite FTS5 Lexical Search over External Vector DB",
           rationale:
-            "Customer support documentation relies heavily on exact product names, error codes, and SKU identifiers. Lexical BM25 search via SQLite FTS5 executes deterministically in sub-millisecond time with zero cloud infrastructure overhead.",
-          impact: "Eliminated vector database cloud costs and latency while boosting exact-match accuracy for SKU/policy lookups.",
+            "Support documentation often relies on exact product names and error codes. SQLite FTS5 provides local lexical BM25 retrieval without requiring an external vector database.",
+          impact: "Keeps the retrieval path local and supports exact-term lookups; no comparative latency or accuracy benchmark is claimed.",
         },
         {
           decision: "Hard Human-in-the-Loop Review Gates",
           rationale:
             "LLMs must never autonomously authorize financial refunds or security credential resets. By routing sensitive tickets to a NEEDS_HUMAN queue, business risks are contained.",
-          impact: "100% compliance with financial and security boundaries; operators retain sole authorization power.",
+          impact: "Sensitive classifications enter a review queue rather than an automatic approval path; this does not guarantee regulatory compliance.",
         },
         {
           decision: "Tri-Provider LLM Failover with Circuit Breakers",
           rationale:
             "External AI APIs frequently experience rate limits (HTTP 429) or transient outages. A stateful circuit breaker trips after 2 consecutive errors and routes traffic to secondary providers.",
-          impact: "Ensured uninterrupted customer triage during upstream Gemini or Groq API disruptions.",
+          impact: "Provides fallback paths for provider failures, with mock fallback explicitly identified; uninterrupted service is not guaranteed.",
         },
       ],
       securityAndGovernance: [
         "Prompt injection detection flags instruction-hijacking attempts and forces ticket into manual review",
         "SSRF protection on test endpoints blocks requests targeting internal network ranges",
-        "Zero persistent hardcoded keys; full 12-factor configuration via validated environment schemas",
-        "Permanent recording of all state transitions and operator actions in an immutable audit ledger",
+        "Provider keys are supplied through environment configuration rather than application source",
+        "Application audit events record state transitions and operator actions; SQLite administrators can still modify stored data",
       ],
       lessonsLearned:
-        "Building reliable AI workflows requires designing for model failure from day one. Deterministic business rules, lexical grounding, and human checkpoints turn unpredictable LLMs into enterprise-grade operations tooling.",
+        "Design for model failure from day one: deterministic rules, retrieval evidence, and human checkpoints make the workflow easier to inspect and test.",
     },
   },
   {
     id: "ai-lead-management-agent",
     slug: "ai-lead-management-agent",
     title: "AI Lead Management Agent",
-    subtitle: "Enterprise Multi-Channel Lead Qualification & Scoring Platform",
+    subtitle: "Multi-Channel Lead Qualification & Scoring Platform",
     category: "Featured AI Project",
     featured: true,
+    status: "Independent project · recorded qualification validation",
+    validationNote: "68 tests and 81% coverage are recorded in the current README. These are project validation results, not measured sales conversion. Submitted budget fields are not independent proof of a prospect’s finances.",
+    evidenceSources: [{ label: "README · recorded test results", url: "https://github.com/ronakkhunt28-create/ai-lead-management-agent/blob/286bba25e97254b59f9c030a63de4cf69d060b85/README.md#verified-test-metrics" }, { label: "Scoring schema · seven factors", url: "https://github.com/ronakkhunt28-create/ai-lead-management-agent/blob/286bba25e97254b59f9c030a63de4cf69d060b85/app/schemas/scoring.py" }],
     description:
       "Automated lead qualification platform with multi-channel ingestion, multi-provider LLM failover, deterministic 7-factor mathematical scoring, prompt-injection defenses, and automated outbound actioning.",
     problem:
-      "Enterprise sales teams waste hundreds of hours manually screening unqualified leads, while high-value prospects sit waiting. Generative AI alone is dangerous here because hallucinated scores can misdirect high-value sales reps.",
+      "Manual lead screening is repetitive, and an LLM-generated score can be influenced by untrusted text. Qualification needs inspectable scoring rules and explicit limits on model authority.",
     solution:
       "Decouples semantic signal extraction from scoring. Multi-provider LLMs parse unstructured inquiries, but a deterministic 7-factor algorithm calculates qualification scores (0–100) with strict commercial evidence gating and prompt injection caps.",
     githubUrl: "https://github.com/ronakkhunt28-create/ai-lead-management-agent",
@@ -216,7 +225,7 @@ export const projects: ProjectItem[] = [
       "FastAPI",
       "SQLAlchemy 2.0",
       "SQLite",
-      "Google Gemini 3.7 Flash",
+      "Google Gemini API",
       "Groq API",
       "OpenRouter",
       "n8n",
@@ -230,8 +239,8 @@ export const projects: ProjectItem[] = [
       { label: "Scoring Factors", value: "7 Factors", detail: "Deterministic 0–100 mathematical engine" },
     ],
     highlights: [
-      "Deterministic 7-factor qualification engine evaluating Budget, Timeline, Intent, Company Size, Service Fit, Authority, and Sentiment",
-      "Commercial-evidence gating: LLM text extraction cannot unlock HIGH grade without structured budget verification",
+      "Seven scoring factors: budget, intent, timeline, contact quality, service fit, decision-maker signals, and other source/sentiment/message-depth signals",
+      "Structured budget gating: model-extracted budget text alone cannot unlock HIGH grade; submitted fields are not independent financial verification",
       "Prompt-injection defense: adversarial override directives are sanitized and permanently capped to score <= 35 (LOW)",
       "Tri-provider cascading LLM router (Gemini → Groq → OpenRouter) with circuit breakers",
       "Automated outbound workflows: instant Telegram alerts and tailored personalized email drafts for high-tier prospects",
@@ -252,7 +261,7 @@ export const projects: ProjectItem[] = [
       {
         step: "03",
         title: "Multi-Provider AI Router",
-        description: "Cascading router extracts commercial intent signals using Gemini 3.7 Flash with Groq failover.",
+        description: "Cascading router extracts commercial intent signals using Gemini with Groq and OpenRouter fallback.",
         technology: "Gemini / Groq API",
       },
       {
@@ -264,7 +273,7 @@ export const projects: ProjectItem[] = [
       {
         step: "05",
         title: "Evidence & Injection Gating",
-        description: "Enforces trust capping: detected injection attempts are capped to <= 35; unverified budgets capped to MEDIUM.",
+        description: "Detected injection attempts are capped to <= 35; leads without qualifying structured budget evidence are capped to MEDIUM.",
         technology: "Security Trust Gating",
       },
       {
@@ -284,7 +293,7 @@ export const projects: ProjectItem[] = [
       {
         src: "/images/projects/ai-lead-management-agent/01-dashboard.png",
         alt: "Executive Lead Operations Dashboard",
-        caption: "Executive Dashboard showing conversion KPIs, qualification breakdown, and lead pipeline table.",
+        caption: "Project dashboard showing sample qualification breakdown and lead pipeline records; not measured business conversion results.",
       },
       {
         src: "/images/projects/ai-lead-management-agent/02-new-lead.png",
@@ -299,7 +308,7 @@ export const projects: ProjectItem[] = [
       {
         src: "/images/projects/ai-lead-management-agent/04-lead-details.png",
         alt: "Lead Details & Outbound Draft",
-        caption: "Lead inspection showing auto-generated personalized email draft and immutable audit events.",
+        caption: "Lead inspection showing a generated email draft and application audit events.",
       },
       {
         src: "/images/projects/ai-lead-management-agent/05-settings.png",
@@ -324,13 +333,13 @@ export const projects: ProjectItem[] = [
           decision: "Separation of Semantic Extraction from Mathematical Scoring",
           rationale:
             "Letting an LLM output an arbitrary qualification score (e.g. 'This lead is 95/100') is brittle and vulnerable to prompt injection. The LLM only extracts structured categorical facts; deterministic Python code computes the final weighted score.",
-          impact: "Guaranteed mathematical consistency and zero score hallucination.",
+          impact: "The model does not assign the final score. Signal extraction can still be wrong, so scoring inputs remain inspectable.",
         },
         {
           decision: "Commercial Evidence Gating Rule",
           rationale:
-            "A prospect can write 'We have millions to spend' in the text field. The system caps the score to MEDIUM unless a verified budget selection was submitted in structured form fields.",
-          impact: "Prevents conversational bluffing from misallocating executive sales resources.",
+            "A prospect can claim a large budget in free text. The system requires qualifying structured budget fields before HIGH grade; those fields are submitted claims, not independently verified funds.",
+          impact: "Limits the influence of free-text budget claims on qualification. No measured sales-efficiency improvement is claimed.",
         },
         {
           decision: "Zero-Credit Offline Mock Engine",
@@ -341,22 +350,25 @@ export const projects: ProjectItem[] = [
       ],
       securityAndGovernance: [
         "Prompt injection regex scanner detects 'ignore instructions' patterns and caps score to <= 35",
-        "Complete input sanitization via Pydantic v2 prevents XSS and SQL parameter tampering",
-        "Permanent audit log records every scoring weight, provider attempt, and outbound notification event",
+        "Pydantic validation and sanitization screen inputs; these controls are not a blanket guarantee against XSS or injection",
+        "Application audit records capture scoring, provider attempts, and notification states, including simulated or misconfigured delivery",
       ],
       lessonsLearned:
-        "AI agents in commercial workflows are only as good as the guardrails around them. Combining LLM extraction with deterministic scoring math creates enterprise-grade reliability.",
+        "Separate semantic extraction from scoring authority, and distinguish successful delivery from simulation, drafting, and provider failure.",
     },
   },
   {
     id: "opsforge-ai",
     slug: "opsforge-ai",
     title: "OpsForge AI",
-    subtitle: "Multi-Agent Autonomous Business Operations Platform",
+    subtitle: "Approval-Gated Multi-Agent Workflow Platform",
     category: "Multi-Agent System",
     featured: true,
+    status: "Independent project · simulated LLM lifecycle validated",
+    validationNote: "32 tests and 18 acceptance criteria are recorded. The end-to-end flow used SimulatedAdapter; the Gemini network handshake is not a successful live inference test. Live LLM inference remains unverified.",
+    evidenceSources: [{ label: "Validation report · recorded acceptance", url: "https://github.com/ronakkhunt28-create/opsforge-ai/blob/6da7b9c59ca7b87bedd617abdeffa27667c2ac88/FINAL_VALIDATION_REPORT.md" }, { label: "Integration scope · live LLM limitation", url: "https://github.com/ronakkhunt28-create/opsforge-ai/blob/6da7b9c59ca7b87bedd617abdeffa27667c2ac88/FINAL_100_PERCENT_VALIDATION.md" }],
     description:
-      "Production-grade autonomous business operations and agentic workflow platform. Decomposes natural language objectives into dependency-ordered DAGs, executes Playwright research and pgvector RAG, enforces human review gates, and logs all events in a SHA-256 cryptographic audit chain.",
+      "Multi-agent workflow engineering project with dependency-ordered DAGs, Playwright research, pgvector retrieval, human approval gates, and a SHA-256 chained audit log. End-to-end validation used a simulated LLM; live inference remains unverified.",
     problem:
       "Enterprises want autonomous agentic workflows, but fear black-box execution, uncontrolled API side-effects, hallucinated proposals, and lack of compliance audit trails.",
     solution:
@@ -367,7 +379,7 @@ export const projects: ProjectItem[] = [
       "FastAPI 0.115+",
       "Next.js 14 App Router",
       "PostgreSQL 16 + pgvector",
-      "Redis 7 + Arq",
+      "Redis + Arq",
       "Playwright",
       "n8n (HMAC-SHA256)",
       "Tailwind CSS",
@@ -375,7 +387,7 @@ export const projects: ProjectItem[] = [
     ],
     metrics: [
       { label: "Verification Suite", value: "32/32", detail: "100% passing across unit, engine, and E2E" },
-      { label: "Acceptance Criteria", value: "18/18", detail: "All core business requirements verified" },
+      { label: "Acceptance Criteria", value: "18/18", detail: "Recorded acceptance checks; simulated LLM scope" },
       { label: "Agent Personas", value: "5 Swarm Agents", detail: "Planner, Researcher, Analyst, Drafter, QA" },
       { label: "Audit Ledger", value: "SHA-256", detail: "Tamper-evident cryptographically chained logs" },
     ],
@@ -414,7 +426,7 @@ export const projects: ProjectItem[] = [
       {
         step: "05",
         title: "Analyst & Proposal Synthesis",
-        description: "Analyst scores ICP fit (86/100); Drafter writes personalized proposal citing chunk IDs.",
+        description: "Analyst produces an ICP-fit score; Drafter composes a proposal citing chunk IDs. Screenshot scores are sample data, not business outcomes.",
         technology: "Analyst & Drafting Agents",
       },
       {
@@ -474,25 +486,25 @@ export const projects: ProjectItem[] = [
           decision: "Strict Non-LLM Side-Effect Sandboxing",
           rationale:
             "Allowing an LLM to make direct HTTP requests or database writes creates catastrophic vulnerability. In OpsForge, agents output structured tool requests; deterministic Python code executes them with idempotency keys.",
-          impact: "Zero unauthorized API calls or duplicate financial records under network retries.",
+          impact: "Recorded tests exercise approval boundaries and idempotent CRM dispatch; they do not prove absence of all unauthorized actions in production.",
         },
         {
           decision: "Tamper-Evident SHA-256 Cryptographic Audit Ledger",
           rationale:
-            "Standard database logs can be surreptitiously updated or deleted. OpsForge chains every block via SHA-256 (curr_hash = SHA256(prev_hash + data)). Any database alteration breaks the chain.",
-          impact: "Enterprise-grade non-repudiation and regulatory compliance verification.",
+            "OpsForge links audit entries through SHA-256 hashes. The verifier can detect changes that break the retained chain; this alone does not prevent privileged rewriting or prove completeness of the log.",
+          impact: "Adds tamper evidence to application events, not regulatory certification or guaranteed non-repudiation.",
         },
         {
           decision: "Dual Execution Modes (Docker vs. Zero-Dependency Local)",
           rationale:
-            "Production uses PostgreSQL 16 + pgvector and Redis 7, but developers and automated CI pipelines need instant zero-dependency execution. OpsForge provides a clean SQLite + in-memory vector mode for testing.",
-          impact: "Full 32-test regression suite executes in under 15 seconds in CI without running containers.",
+            "The service-backed configuration uses PostgreSQL + pgvector and Redis/Arq. A SQLite and in-memory mode supports local tests without containers.",
+          impact: "Enables the recorded 32-test suite to run locally; no fixed execution-time guarantee is claimed.",
         },
       ],
       securityAndGovernance: [
         "Executable tags stripped from all web content via headless Chromium before agent reasoning",
-        "System override and jailbreak patterns neutralized via strict regex sanitization to [BLOCKED_INSTRUCTION]",
-        "Zero persistence of private model reasoning chains or raw prompts in public audit logs",
+        "Known override patterns are screened with regex sanitization; this is not comprehensive jailbreak prevention",
+        "Structured agent outputs are used as application artifacts; private chain-of-thought is not part of the public audit contract",
         "HMAC-SHA256 cryptographic signatures on all outbound n8n webhook dispatches",
       ],
       lessonsLearned:
@@ -506,25 +518,27 @@ export const projects: ProjectItem[] = [
     subtitle: "Standalone Desktop Inventory & Business Operations Management System",
     category: "Desktop & Operations System",
     featured: false,
+    status: "Release candidate · production deployment not verified",
+    validationNote: "Local source and Windows release artifacts were inspected. Release-candidate validation is not evidence of a deployed customer installation. No reproducible test-count or uptime claim is published.",
+    evidenceSources: [],
     description:
-      "Production desktop business software engineered with Python 3.12, PySide6, and SQLAlchemy/SQLite. Features complete inventory lifecycle management (IN/OUT/RETURN/ADJUST), product masters, ledger reporting, and automated database backups packaged as a standalone Windows executable.",
+      "Local-first Windows inventory application built with Python, PySide6, and SQLAlchemy/SQLite: stock movements, product records, MIS reporting, and database backups. Release candidate; production deployment has not been verified.",
     problem:
       "Small-to-medium retail and wholesale enterprises frequently suffer from inventory shrinkage, stock-out discrepancies, and tedious manual reconciliation in disconnected spreadsheets.",
     solution:
       "Built a secure, local-first PySide6 desktop MIS application with strict relational data integrity, multi-user role authentication, automated transactional ledgers, and Monthly MIS reporting.",
-    githubUrl: "https://github.com/ronakkhunt28-create",
     technologies: [
-      "Python 3.12",
+      "Python",
       "PySide6 (Qt)",
       "SQLite",
       "SQLAlchemy 2.0",
-      "Pillow",
+      "openpyxl / ReportLab",
       "PyInstaller",
       "Inno Setup",
     ],
     metrics: [
       { label: "Architecture", value: "Desktop MIS", detail: "Local-first PySide6 graphical application" },
-      { label: "Modules", value: "8 Core Modules", detail: "Auth, Inventory, Ledger, MIS, Audit, Settings" },
+      { label: "Release Status", value: "Candidate", detail: "Production deployment not verified" },
       { label: "Packaging", value: "Standalone EXE", detail: "Packaged via PyInstaller & Inno Setup" },
       { label: "Data Safety", value: "Auto-Backup", detail: "Timestamped SQLite safety backups" },
     ],
@@ -540,7 +554,7 @@ export const projects: ProjectItem[] = [
         step: "01",
         title: "Role-Based Authentication",
         description: "Secure login gate protecting inventory adjustments and financial ledger views.",
-        technology: "PySide6 / SHA-256",
+        technology: "PySide6 / Password Hashing",
       },
       {
         step: "02",
@@ -558,41 +572,41 @@ export const projects: ProjectItem[] = [
         step: "04",
         title: "General Ledger & Monthly MIS",
         description: "Compiles chronological transaction history, stock turnover, and valuation metrics.",
-        technology: "Pandas / SQL Queries",
+        technology: "SQLAlchemy / SQL Queries",
       },
       {
         step: "05",
         title: "Audit & Safety Backups",
-        description: "Logs all manual adjustments and creates automatic compressed SQLite database snapshots.",
+        description: "Records adjustment events and creates timestamped SQLite database copies.",
         technology: "File System / Backup Engine",
       },
     ],
     screenshots: [],
     verifiedEvidence: {
-      testCount: "8 Functional Modules",
-      coverage: "Production Packaged EXE",
-      e2eStatus: "Verified on Windows 11",
-      automationProof: "Automated Database Backup Engine Active",
+      testCount: "No published reproducible test count",
+      coverage: "Release-candidate packaging only",
+      e2eStatus: "Customer production deployment not verified",
+      automationProof: "Backup implementation inspected in local source",
     },
     deepDive: {
       engineeringDecisions: [
         {
           decision: "Local-First Desktop Architecture with SQLite",
           rationale:
-            "Commercial warehouse environments frequently face intermittent internet connectivity. A local-first desktop application guarantees 100% operational uptime without cloud subscription costs.",
-          impact: "Zero downtime during network disconnects and immediate UI responsiveness.",
+            "Keeping the application and database local avoids requiring a cloud service for core inventory operations.",
+          impact: "Supports offline workflows; it does not guarantee uptime, data recovery, or measured performance.",
         },
         {
           decision: "Atomic Stock Movement Transactions",
           rationale:
             "Inventory balances must never desync during mid-transaction failures. Stock IN/OUT operations run inside strict ACID transaction blocks.",
-          impact: "Eliminated inventory balance discrepancies across all product categories.",
+          impact: "Transaction boundaries support consistent stock updates. No measured business-wide discrepancy reduction is claimed.",
         },
       ],
       securityAndGovernance: [
         "Cryptographic password hashing preventing plain-text credential leaks",
-        "Immutable audit event recording for every stock adjustment and ledger deletion",
-        "Pre-modification safety backup snapshots preventing accidental operational data loss",
+        "Application audit events record inventory operations; they are not immutable against database administrators",
+        "Database backup routines support recovery, but successful restore must be verified before relying on them",
       ],
       lessonsLearned:
         "Understanding real-world business operations, stock discrepancies, and ledger mechanics is essential for building practical software that actual warehouse and operations teams will adopt.",
@@ -615,51 +629,51 @@ export const secondaryProjects: SecondaryProject[] = [
     category: "Operational Automation",
     technologies: ["Excel VBA", "Formulas", "MIS Dashboards", "Relational Worksheets"],
     description:
-      "Enterprise inventory and stock-management system built for Maheshwari Silk Mills. Automates TOTAL STOCK reporting, stock balance calculation across 200+ product listings, and recurring MIS-style management reports.",
+      "Excel/VBA inventory workflows described in the work-history record, including TOTAL STOCK reporting, stock balances, and recurring management reports. Business impact has not been independently measured.",
     highlights: [
       "Custom VBA macros automating end-of-day stock reconciliation",
       "Interactive executive dashboards showing inventory turnover and reorder points",
-      "Structured data validation eliminating manual ledger entry errors",
+      "Structured data validation to reduce manual entry mistakes",
     ],
-    status: "Verified in Production",
+    status: "Work-history project · impact not independently verified",
   },
   {
     title: "Trading Journal Pro X",
     category: "Financial Analytics & Automation",
-    technologies: ["Excel VBA", "UserForms", "Risk Analytics", "Data Export/Import"],
+    technologies: ["Python / FastAPI", "React / TypeScript", "SQLite WAL", "Windows WebView2"],
     description:
-      "Comprehensive trading performance analytics engine and journal. Features custom VBA UserForms, automated risk-reward calculation, win-rate metrics, chronological trade logs, and automated backup routines.",
+      "Python/FastAPI and React desktop journal with a Windows WebView2 shell, SQLite WAL storage, MT5 reconciliation, and analytics. Live trade-close ingestion and cloud AI validation are pending; not production-ready.",
     highlights: [
-      "Custom interactive UserForm for standardized trade logging",
-      "Automated risk-reward and draw-down statistical calculations",
-      "Automated export/import routines with timestamped backup retention",
+      "React/TypeScript interface backed by FastAPI and SQLAlchemy",
+      "Recorded backend and reconciliation fixture checks; not a fresh portfolio-audit rerun",
+      "Genuine MT5 trade-close ingestion and live cloud AI remain validation blockers",
     ],
-    status: "Completed & Verified",
+    status: "Live validation pending · not production-ready",
   },
   {
     title: "LevelPilot Pro",
     category: "Systems & Execution Automation",
-    technologies: ["Python 3.12", "MetaTrader 5 API", "State Machines", "WAL Engine"],
+    technologies: ["Python", "MetaTrader 5 API", "Local LLM / llama.cpp", "SQLite WAL"],
     description:
-      "High-reliability algorithmic trading execution platform featuring strict risk gates, deterministic signal state machine, Write-Ahead Logging (WAL) for disaster recovery, and genuine broker terminal validation.",
+      "Standalone Python trading copilot with local LLM conversation, editable trade ideas, MT5-native risk sizing, and SQLite WAL persistence. Recorded broker checks used paper/read-only modes; no live-order or profitability claim.",
     highlights: [
-      "Deterministic state machine enforcing risk limits before trade execution",
-      "WAL crash-recovery engine restoring open positions after unexpected restarts",
-      "Comprehensive automated test harness verifying market replay scenarios",
+      "Trade-idea workflow with risk limits and explicit execution-mode boundaries",
+      "Recovery logging designed to reconcile execution state after interruptions",
+      "Replay and validation tooling; no profitability guarantee",
     ],
-    status: "Verified Architecture",
+    status: "Recorded paper/read-only checks · no live-order claim",
   },
   {
     title: "Daybook Mobile Ledger",
     category: "Mobile Application",
     technologies: ["Android", "React Native", "Local SQLite", "Offline First"],
     description:
-      "Local-first Android daily business ledger application for tracking customer credit/debit transactions, daily cashflows, and automated balance summaries with zero cloud dependencies.",
+      "React Native/Expo Android ledger for local transaction entry, cashflow summaries, and SQLite-backed balances. Local project source supports offline workflows; this audit does not certify store release or every device.",
     highlights: [
       "Instant offline transaction recording with SQLite persistence",
       "Daily and monthly cashflow summary views",
-      "Packaged and verified Android APK deployment",
+      "Android packaging configuration; device and distribution validation are separate gates",
     ],
-    status: "Verified Build",
+    status: "Local Android project · device validation is separate",
   },
 ];

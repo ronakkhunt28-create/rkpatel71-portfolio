@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/hero/Hero";
 import { Capabilities } from "@/components/capabilities/Capabilities";
@@ -22,16 +22,17 @@ export default function HomePage() {
         <Hero />
         <ProofStrip />
         <FeaturedProjects />
-        <Capabilities />
-        <WorkflowExplorer />
-        <SkillsMatrix />
-        <ProcessFlow />
+        {/* Keep server-rendered content intact while isolating hydration work. */}
+        <Suspense fallback={null}><Capabilities /></Suspense>
+        <Suspense fallback={null}><WorkflowExplorer /></Suspense>
+        <Suspense fallback={null}><SkillsMatrix /></Suspense>
+        <Suspense fallback={null}><ProcessFlow /></Suspense>
         <SecondaryProjects />
         <Experience />
-        <Contact emailDeliveryAvailable={Boolean(
+        <Suspense fallback={null}><Contact emailDeliveryAvailable={Boolean(
           process.env.RESEND_API_KEY && process.env.CONTACT_EMAIL_FROM &&
           !/@resend\.dev\b/i.test(process.env.CONTACT_EMAIL_FROM)
-        )} />
+        )} /></Suspense>
       </main>
       <Footer />
     </>

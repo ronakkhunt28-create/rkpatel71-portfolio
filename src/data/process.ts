@@ -54,8 +54,8 @@ export const processSteps: ProcessStep[] = [
     title: "AI-Assisted Implementation",
     subtitle: "Accelerated scaffolding with strict code review",
     description:
-      "Leverage AI coding agents (ChatGPT, Codex) to accelerate drafting of boilerplate, Pydantic models, SQL queries, and UI components while reviewing every line in real time.",
-    humanRole: "Review every generated line, reject hallucinations, enforce type safety.",
+      "Use AI coding agents to draft scaffolding, models, queries, and UI components. Review generated changes and validate behavior with tests rather than treating generated code as verified.",
+    humanRole: "Review generated changes, inspect assumptions, and enforce type safety.",
     aiRole: "Generate rapid code scaffolding and boilerplate implementation.",
     verificationSignal: "Clean, Typed, Idiomatic Source Code",
   },
@@ -67,7 +67,7 @@ export const processSteps: ProcessStep[] = [
       "Inspect runtime exceptions, database lock contention, timeout cascades, and schema desynchronizations using structured logging and deterministic reproduction scripts.",
     humanRole: "Isolate root causes, analyze stack traces, and verify invariant fixes.",
     aiRole: "Generate hypothesis tests and pinpoint anomalous log lines.",
-    verificationSignal: "Reproducible Regression Fixes with Zero Side-Effects",
+    verificationSignal: "Reproducible Regression Checks",
   },
   {
     number: "07",
@@ -77,7 +77,7 @@ export const processSteps: ProcessStep[] = [
       "Construct comprehensive Pytest suites, mock provider adapters, schema validation tests, and headless Playwright browser checks measuring exact code coverage.",
     humanRole: "Design rigorous test scenarios, boundary conditions, and mock fixtures.",
     aiRole: "Generate parameterized test matrices and edge-case permutations.",
-    verificationSignal: "Passing Pytest Suite (>80% Coverage) & Playwright Checks",
+    verificationSignal: "Recorded Test Results, Coverage Scope & Browser Checks",
   },
   {
     number: "08",
@@ -94,19 +94,19 @@ export const processSteps: ProcessStep[] = [
     title: "Final Validation",
     subtitle: "Live end-to-end integration and smoke verification",
     description:
-      "Execute live webhook flows (n8n), verify multi-provider failover against simulated upstream outages, and confirm immutable audit event logging.",
+      "Test authorized integrations, simulate provider outages, and inspect audit events. Separate mock validation from genuine live inference and delivery, and record unresolved gates.",
     humanRole: "Authorize final operational acceptance and verify live workflows.",
     aiRole: "Monitor telemetry, latency benchmarks, and payload diffs.",
-    verificationSignal: "Live Webhook Execution Log & Final Acceptance Signoff",
+    verificationSignal: "Evidence Log with Explicit Live-Validation Limitations",
   },
   {
     number: "10",
     title: "Production Delivery",
-    subtitle: "Deployable artifacts, clean documentation, & zero debt",
+    subtitle: "Release artifacts, documentation, and explicit remaining risks",
     description:
       "Package the system into production containers, standalone executables, or Vercel deployments accompanied by clean READMEs, environment templates, and operational runbooks.",
     humanRole: "Manage repository release hygiene, CI/CD pipeline, and deployment.",
     aiRole: "Draft deployment runbooks, API documentation, and changelogs.",
-    verificationSignal: "Production Deployment Ready with Zero Unresolved Issues",
+    verificationSignal: "Release Checklist & GO / NO-GO Gate; Deployment Is Separate",
   },
 ];

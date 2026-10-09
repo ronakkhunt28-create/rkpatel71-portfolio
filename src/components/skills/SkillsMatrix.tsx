@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { navigateTabs } from "@/lib/tab-navigation";
 
 const groups = [
   { name: "AI & Agentic Systems", summary: "Bounded agents, model routing, and human-controlled execution.", items: ["Multi-provider LLM routing", "Specialized agent DAGs", "Prompt-injection defense", "Human approval state machines"] },
@@ -31,8 +32,10 @@ export function SkillsMatrix() {
                 type="button"
                 role="tab"
                 aria-selected={active === index}
+                tabIndex={active === index ? 0 : -1}
                 aria-controls="skill-panel"
                 onClick={() => setActive(index)}
+                onKeyDown={event => navigateTabs(event, index, groups.length, setActive)}
                 className={`min-h-16 rounded-xl border px-4 text-left text-xs transition ${active === index ? "border-cyan-300/50 bg-cyan-300/[.07] text-white" : "hairline text-slate-500 hover:text-slate-300"}`}
               >
                 {item.name}

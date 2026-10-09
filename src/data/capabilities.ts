@@ -19,19 +19,19 @@ export const capabilities: Capability[] = [
     keySignals: [
       "Strict tool allowlisting prevents arbitrary execution",
       "Idempotency keys prevent duplicate downstream side-effects",
-      "Zero persistence of private model reasoning chains",
+      "Structured agent outputs rather than persisted private chain-of-thought",
     ],
     iconName: "Bot",
   },
   {
     id: "ai-automation",
     title: "AI Automation & Workflow Pipelines",
-    tagline: "Connecting LLMs to production webhooks and business tools",
+    tagline: "Connecting LLMs to validated webhooks and business tools",
     description:
       "Automate high-volume business operations by bridging external webhooks, REST APIs, and multi-provider LLMs. Build multi-branch triage workflows that ingest unstructured data and output clean, validated actions.",
     technologies: ["n8n", "Webhooks", "FastAPI", "Pydantic v2", "HTTPX"],
     keySignals: [
-      "Production-tested 6-node n8n webhook topologies",
+      "Recorded integration checks for 6-node n8n intake workflows",
       "Strict payload normalization and schema validation",
       "Automated fallback routes when upstream APIs fail",
     ],
@@ -42,10 +42,10 @@ export const capabilities: Capability[] = [
     title: "Grounded RAG & Retrieval Pipelines",
     tagline: "Deterministic search with explicit citation verification",
     description:
-      "Eliminate generative hallucinations by pairing language models with lexical and semantic retrieval systems. Enforce strict chunk provenance, similarity thresholds, and automated citation matching before customer delivery.",
+      "Reduce unsupported responses by pairing language models with lexical and semantic retrieval. Track chunk provenance and validate citations; retrieval does not eliminate model errors.",
     technologies: ["SQLite FTS5", "PostgreSQL", "pgvector", "BM25 Lexical", "Chunk Overlap"],
     keySignals: [
-      "Fast, zero-latency local FTS5 search with no external vector DB lock-in",
+      "Local FTS5 search without an external vector database dependency",
       "Mandatory citation IDs matched against retrieved knowledge",
       "Automatic fallback to human review when groundedness is low",
     ],
@@ -54,13 +54,13 @@ export const capabilities: Capability[] = [
   {
     id: "deterministic-scoring",
     title: "Deterministic Qualification & Business Rules",
-    tagline: "Mathematical scoring models where LLMs cannot hallucinate high-value decisions",
+    tagline: "Code owns the final score; models extract inspectable signals",
     description:
       "Decouple AI semantic extraction from quantitative decision logic. Extract structured signals via LLMs, but score opportunities and assign SLAs using deterministic mathematical formulas and commercial evidence gating.",
     technologies: ["Python 3.12", "Pydantic v2", "Mathematical Scoring", "SLA State Machines"],
     keySignals: [
       "7-factor mathematical qualification scoring (0–100)",
-      "Commercial evidence gating: budgets require structured proof",
+      "Budget gating requires submitted structured fields, not independently verified funds",
       "Strict P1–P4 SLA countdowns with 15-minute response triggers",
     ],
     iconName: "ShieldCheck",
@@ -84,11 +84,11 @@ export const capabilities: Capability[] = [
     title: "Prompt Defense & Tamper-Evident Auditing",
     tagline: "Adversarial input screening and cryptographic audit trails",
     description:
-      "Harden AI systems against prompt injection, instruction overrides, and parameter tampering. Log every classification, state transition, and human approval in immutable, SHA-256 cryptographically chained audit stores.",
+      "Screen known prompt-injection patterns and constrain model authority. OpsForge adds SHA-256 chained audit events; SupportPilot and Lead Management use application logs. Tamper evidence is not immutability or compliance certification.",
     technologies: ["SHA-256 Cryptographic Chaining", "Regex Sanitization", "Trust Capping", "Playwright Sandbox"],
     keySignals: [
       "Adversarial prompt injection detection caps lead scores to <= 35",
-      "Continuous SHA-256 hash chains detect unauthorized DB mutations",
+      "OpsForge’s verifier detects mutations that break the retained SHA-256 chain",
       "Headless browser sandboxing strips executable tags from scraped content",
     ],
     iconName: "Lock",

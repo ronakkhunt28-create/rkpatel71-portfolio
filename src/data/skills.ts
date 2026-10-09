@@ -16,7 +16,7 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       {
         name: "LLM API Integration",
-        description: "Production integration with Google Gemini 3.7 Flash, Groq, and OpenRouter.",
+        description: "Provider adapters for Google Gemini, Groq, and OpenRouter with recorded project integration checks.",
         verifiedContext: "SupportPilot AI & AI Lead Management Agent",
       },
       {
@@ -31,7 +31,7 @@ export const skillGroups: SkillGroup[] = [
       },
       {
         name: "Multi-Provider LLM Routing",
-        description: "Cascading router with automated circuit breakers preventing latency spikes during API downtime.",
+        description: "Cascading provider routing with circuit breakers and explicit fallback states; outages can still add latency.",
         verifiedContext: "Gemini → Groq → OpenRouter failover",
       },
       {
@@ -97,7 +97,7 @@ export const skillGroups: SkillGroup[] = [
         verifiedContext: "Lead Management & SupportPilot models",
       },
       {
-        name: "Redis 7 & Arq",
+        name: "Redis & Arq",
         description: "Asynchronous task queue workers, real-time pub/sub messaging, and heartbeat telemetry.",
         verifiedContext: "OpsForge distributed execution worker pool",
       },
@@ -114,7 +114,7 @@ export const skillGroups: SkillGroup[] = [
       },
       {
         name: "PostgreSQL 16 & pgvector",
-        description: "Production relational data store with native vector extensions for semantic similarity search.",
+        description: "Relational storage with vector extensions for semantic similarity search in OpsForge’s service-backed configuration.",
         verifiedContext: "OpsForge enterprise SOP knowledge catalog",
       },
       {
@@ -124,7 +124,7 @@ export const skillGroups: SkillGroup[] = [
       },
       {
         name: "Relational Schema Design",
-        description: "Foreign keys, transaction isolation, indices, and audit event tables for non-repudiation.",
+        description: "Foreign keys, transaction boundaries, indices, and application audit tables for traceability.",
         verifiedContext: "BizHunter MIS & Lead Management tables",
       },
     ],
@@ -162,7 +162,7 @@ export const skillGroups: SkillGroup[] = [
       {
         name: "Excel & VBA Automation",
         description: "Custom VBA macros, automated data extraction, interactive UserForms, and MIS reporting.",
-        verifiedContext: "Maheshwari Silk Mills & Trading Journal Pro X",
+        verifiedContext: "Inventory work-history project; Trading Journal’s current suite uses Python/React",
       },
       {
         name: "Inventory & Stock Reconciliation",
@@ -172,7 +172,7 @@ export const skillGroups: SkillGroup[] = [
       {
         name: "MIS Operational Reporting",
         description: "Transforming raw transaction records into structured management dashboards and reports.",
-        verifiedContext: "Monthly MIS generator across 200+ products",
+        verifiedContext: "BizHunter reporting source and inventory work-history record",
       },
     ],
   },
@@ -193,7 +193,7 @@ export const skillGroups: SkillGroup[] = [
       {
         name: "Independent Verification & Audit",
         description: "Writing independent automated test harnesses to validate that AI-generated code meets all constraints.",
-        verifiedContext: "100% test pass rates across all public repos",
+        verifiedContext: "Versioned flagship test reports; historical results with stated scope",
       },
     ],
   },

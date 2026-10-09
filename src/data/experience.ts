@@ -20,18 +20,18 @@ export const experiences: ExperienceItem[] = [
     period: "Apr 2026 – Jun 2026",
     location: "Surat, Gujarat, India",
     summary:
-      "Spearheaded operational automation for wholesale and manufacturing inventory management, replacing manual paper and spreadsheet reconciliations with structured Excel/VBA automation.",
+      "Worked on Excel/VBA inventory reporting and stock-reconciliation workflows for wholesale operations.",
     responsibilities: [
       "Built and optimized Excel/VBA inventory and stock-management workflows, including the centralized TOTAL STOCK reporting pipeline and operational dashboards.",
-      "Automated recurring stock balance calculations and daily reporting routines across 200+ active product listings to eliminate repetitive manual entry.",
+      "Automated recurring stock balance calculations and daily reporting routines to reduce repetitive manual entry.",
       "Structured product data, transactional ledgers, and inventory movement records to support accurate Monthly MIS-style operational reporting.",
-      "Collaborated directly with warehouse staff to ensure data validation schemas matched physical inventory movement workflows.",
+      "Maintained structured product, stock, and transaction records for reporting.",
     ],
     technologies: ["Excel VBA", "VBA Macros", "Advanced Formulas", "MIS Reporting", "Inventory Management"],
     impact: [
-      "Eliminated daily manual calculation errors across 200+ product lines",
-      "Cut end-of-day stock reconciliation time significantly via automated macros",
-      "Delivered real-time stock visibility for management decision-making",
+      "Added validation to inventory reporting workflows",
+      "Used macros to support recurring reconciliation",
+      "Prepared stock summaries for operational reporting; impact was not independently measured",
     ],
   },
 ];

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --ink: #f4f7fb; --muted: #8c98a9; --faint: #566173; --canvas: #080b10;
+  --ink: #f4f7fb; --muted: #8c98a9; --faint: #7b899d; --canvas: #080b10;
   --surface: #0e131c; --surface-2: #111925; --line: rgba(145, 170, 200, 0.14);
   --cyan: #63d9ff; --cyan-soft: rgba(99, 217, 255, 0.12); --violet: #9b8cff;
 }
@@ -23,6 +23,9 @@ a, button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 .display-title { font-size: clamp(2.65rem, 6vw, 5.8rem); line-height: .96; letter-spacing: -.065em; font-weight: 650; }
 .section-title { font-size: clamp(2.1rem, 4.3vw, 4.2rem); line-height: 1; letter-spacing: -.052em; font-weight: 620; }
 .text-balance { text-wrap: balance; } .mono { font-family: var(--font-geist-mono), ui-monospace, monospace; } .muted { color: var(--muted); } .hairline { border-color: var(--line); }
+/* Metadata remains subordinate, but readable against the elevated dark surfaces. */
+.text-slate-500 { color: var(--muted); }
+.text-slate-600, .text-slate-700 { color: var(--faint); }
 .surface { background: linear-gradient(145deg, rgba(17,25,37,.96), rgba(10,15,23,.9)); border: 1px solid var(--line); }
 .grid-bg { background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 46px 46px; mask-image: linear-gradient(to bottom, black 30%, transparent 96%); }
 .button-primary, .button-secondary { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .6rem; border-radius: .75rem; padding: .75rem 1.15rem; font-weight: 650; font-size: .86rem; transition: transform .25s ease, border-color .25s ease, background .25s ease, color .25s ease; }
@@ -34,10 +37,11 @@ a, button, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 .window-bar { height: 2.2rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: .38rem; padding-inline: .85rem; }
 .window-dot { width: .42rem; height: .42rem; border-radius: 50%; background: #334055; }
 .reveal { animation: reveal .75s cubic-bezier(.2,.8,.2,1) both; } .reveal-delay-1 { animation-delay: .08s; } .reveal-delay-2 { animation-delay: .16s; }
-.scroll-pending { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
-.scroll-pending.scroll-visible { opacity: 1; transform: none; }
+/* Keep the LCP headline visible from first paint while preserving its entrance. */
+.reveal-title { animation: reveal-title .75s cubic-bezier(.2,.8,.2,1) both; }
 .flow-path { stroke-dasharray: 7 10; animation: flow 3s linear infinite; } .pulse-node { animation: pulse 2.6s ease-in-out infinite; }
 @keyframes reveal { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes reveal-title { from { transform: translateY(22px); } to { transform: none; } }
 @keyframes flow { to { stroke-dashoffset: -34; } } @keyframes pulse { 50% { opacity: .45; transform: scale(.94); transform-origin: center; } }
 @media (max-width: 640px) { .page-shell { width: min(100% - 1.25rem, 1240px); } .section-space { padding-block: 4.5rem; } .display-title { font-size: clamp(2.8rem, 14vw, 4.3rem); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

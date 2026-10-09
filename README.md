@@ -6,7 +6,6 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.27%20App%20Router-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
-[![Three.js](https://img.shields.io/badge/Three.js-0.169-black?style=flat-square&logo=three.js)](https://threejs.org/)
 [![Verification Suite](https://img.shields.io/badge/Tests-Passing%20(13%2F13)-emerald?style=flat-square)](./scripts/test-verification.mjs)
 
 ---
@@ -22,14 +21,14 @@ It communicates Ronak's core engineering thesis:
 
 ## Key Highlights & Features
 
-- **Interactive 3D AI Workflow Network**: Custom Three.js visualization illustrating central orchestration, orbiting functional nodes (LLM Gateway, FastAPI, n8n, RAG, Deterministic Logic, Human Gate, Tamper-evident Audit), and flowing data particles with smooth mouse interaction, intersection observer pausing, and an accessible fallback.
+- **Interactive SVG workflow**: Lightweight conceptual topology with keyboard/touch node selection, CSS motion, and a simplified mobile layout. The legacy Three.js component is not imported by active pages.
 - **Deep Technical Case Studies**:
-  - **SupportPilot AI**: Customer support operations platform with SQLite FTS5 lexical RAG, deterministic P1–P4 SLA prioritization, cascading failover, and a live 6-node n8n webhook. Verified by **79/79 Pytest tests (85.92% coverage)** and **26 Playwright browser checks**.
-  - **AI Lead Management Agent**: Multi-channel lead intake and qualification platform with deterministic 7-factor scoring (0–100), commercial evidence gating, prompt-injection defense, and automated outbound alerts. Verified by **68/68 Pytest tests (81% coverage)**.
-  - **OpsForge AI**: Autonomous multi-agent business operations platform featuring a 5-agent swarm (Planner, Researcher, Analyst, Drafter, QA), human approval diff editor, and a tamper-evident SHA-256 cryptographic audit chain. Verified by **32/32 automated tests** and **18 verified acceptance criteria**.
-  - **BizHunter Inventory MIS**: Standalone Windows desktop MIS application built with Python 3.12, PySide6, and SQLite/SQLAlchemy.
-- **Controlled Development Lifecycle**: Detailed 10-stage breakdown explaining how Ronak uses AI coding agents (ChatGPT, Codex) to accelerate implementation while retaining 100% human ownership of architecture, constraints, acceptance criteria, debugging, testing, and independent audit.
-- **Verified Resume Download**: Prominent, one-click download of the latest verified PDF resume (`/resume/Ronak_Patel_AI_Automation_Resume.pdf`).
+  - **SupportPilot AI**: Customer support operations platform with SQLite FTS5 lexical RAG, deterministic P1–P4 SLA prioritization, cascading failover, and a live 6-node n8n webhook. Historical build report records **79/79 tests (85.92% coverage)** and **26 browser checks**; no customer production-deployment claim.
+  - **AI Lead Management Agent**: Multi-channel lead intake and qualification platform with deterministic 7-factor scoring (0–100), commercial evidence gating, prompt-injection defense, and automated outbound alerts. Current README records **68/68 tests (81% coverage)**. Structured budget fields are submitted evidence, not independently verified funds.
+  - **OpsForge AI**: Autonomous multi-agent business operations platform featuring a 5-agent swarm (Planner, Researcher, Analyst, Drafter, QA), human approval diff editor, and a tamper-evident SHA-256 cryptographic audit chain. Historical reports record **32/32 tests** and **18 acceptance criteria**. The lifecycle used SimulatedAdapter; live LLM inference remains unverified.
+  - **BizHunter Inventory MIS**: Standalone Windows desktop MIS application built with Python, PySide6, and SQLite/SQLAlchemy. Release candidate; customer production deployment is not verified.
+- **Controlled Development Lifecycle**: Detailed 10-stage breakdown explaining how Ronak uses AI coding agents (ChatGPT, Codex) to accelerate implementation while owning architecture, constraints, debugging, and verification. The process describes intended gates, not a claim that every project has passed production acceptance.
+- **Resume Download**: One-page resume with historical evidence scope and explicit pending validation (`/resume/Ronak_Patel_AI_Automation_Resume.pdf`).
 - **Interactive Contact Workflow**: Direct email copy, social channels, and an anti-spam validated contact form with pluggable API routing (`/api/contact`).
 - **Comprehensive SEO & Performance**: Semantic HTML5, JSON-LD Person schema, canonical URLs, OpenGraph social sharing card, dynamic sitemap (`/sitemap.xml`), and robots directive (`/robots.txt`).
 
@@ -39,13 +38,13 @@ It communicates Ronak's core engineering thesis:
 
 | Layer | Technology |
 |---|---|
-| **Framework** | Next.js 14.2 (App Router, Server Components) |
+| **Framework** | Next.js 15.5.27 / React 19.1.1 (App Router, Server Components) |
 | **Language** | TypeScript 5.6 (Strict Mode) |
 | **Styling & Design System** | Tailwind CSS 3.4, PostCSS, Custom Dark Foundation |
-| **3D Graphics** | Three.js 0.169 (Custom Optimized Canvas) |
+| **Motion** | Lightweight CSS/SVG; reduced-motion support |
 | **Icons & Micro-Interactions** | Lucide React |
 | **Testing & Verification** | Node.js Test Suite (`scripts/test-verification.mjs`) |
-| **Deployment Target** | Vercel Serverless Edge |
+| **Deployment Target** | Existing Vercel project; Node.js contact route |
 
 ---
 
@@ -102,11 +101,11 @@ rkpatel71-portfolio/
 │   │       └── Contact.tsx       # Contact form + direct communication channels
 │   ├── data/
 │   │   ├── site.ts               # Site configuration, canonical domain, links
-│   │   ├── projects.ts           # Centralized verified project data models
+│   │   ├── projects.ts           # Project data, pinned sources and validation limits
 │   │   ├── skills.ts             # Verified technical competencies
 │   │   ├── capabilities.ts       # Core capability archetypes
-│   │   ├── experience.ts         # Verified work history
-│   │   ├── education.ts          # Verified academic background
+│   │   ├── experience.ts         # Self-reported work history
+│   │   ├── education.ts          # Self-reported academic background
 │   │   └── process.ts            # 10-step engineering process
 │   └── styles/
 │       └── globals.css           # Custom dark theme variables & utility classes
@@ -124,7 +123,7 @@ rkpatel71-portfolio/
 ## Local Development & Setup
 
 ### Prerequisites
-- Node.js 18.x or newer (Tested on v24.18.0)
+- Node.js >=18.18 (Next.js minimum); production configured for Node.js 24
 - npm 9.x or newer
 
 ### Installation
@@ -197,3 +196,14 @@ the form for visitors. The canonical URL is centralized in `src/data/site.ts`.
 - **LinkedIn**: [https://www.linkedin.com/in/ronak-patel-72039b3ba](https://www.linkedin.com/in/ronak-patel-72039b3ba)
 - **GitHub**: [https://github.com/ronakkhunt28-create](https://github.com/ronakkhunt28-create)
 - **Domain**: [https://rkpatel71-portfolio.vercel.app](https://rkpatel71-portfolio.vercel.app)
+
+## V2.1 refinement workflow
+
+Refinements were reviewed on `refinement/portfolio-v2-1`; production integration requires explicit approval, final checks, and a recoverable previous-production reference.
+Run lint, TypeScript, production build and `npm audit --omit=dev`, start the production server, then run `npm test` and `scripts/browser_qa.py`.
+Use three cold-navigation Lighthouse runs per mode with the same Chrome/Lighthouse version and simulated throttling; compare medians, not the best score. Local results are not deployed production scores.
+
+The hero and flagship copy render as Server Components. Only interactive diagrams/galleries hydrate; screenshots below the hero are lazy-loaded with layout-aware sizes. The LCP title retains transform motion without opacity-zero delay.
+
+Public project metrics are historical records linked to immutable Git commit URLs; source-code inspection is not a fresh run of those project suites. Employment and education are self-reported and have not been independently authenticated.
+The downloadable resume is generated by `scripts/generate-resume.py` with optional document tooling (ReportLab and Arial fonts on Windows), not an application dependency. Always check its single-page PDF rendering after regeneration.
