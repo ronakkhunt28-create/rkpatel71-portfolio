@@ -8,12 +8,12 @@ import { siteConfig } from "@/data/site";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
-interface Props{params:{slug:string}}
+interface Props{params:Promise<{slug:string}>}
 export async function generateStaticParams(){return projects.map(p=>({slug:p.slug}))}
-export async function generateMetadata({params}:Props):Promise<Metadata>{const p=projects.find(x=>x.slug===params.slug);if(!p)return{title:"Project Not Found"};return{title:`${p.title} Case Study`,description:p.description,openGraph:{title:`${p.title} — ${p.subtitle}`,description:p.description,url:`${siteConfig.url}/projects/${p.slug}`,images:p.screenshots[0]?[{url:p.screenshots[0].src}]:[]}}}
+export async function generateMetadata({params}:Props):Promise<Metadata>{const {slug}=await params;const p=projects.find(x=>x.slug===slug);if(!p)return{title:"Project Not Found"};return{title:`${p.title} Case Study`,description:p.description,openGraph:{title:`${p.title} — ${p.subtitle}`,description:p.description,url:`${siteConfig.url}/projects/${p.slug}`,images:p.screenshots[0]?[{url:p.screenshots[0].src}]:[]}}}
 
-export default function ProjectCaseStudyPage({params}:Props){
- const project=projects.find(p=>p.slug===params.slug);if(!project)notFound();
+export default async function ProjectCaseStudyPage({params}:Props){
+ const {slug}=await params;const project=projects.find(p=>p.slug===slug);if(!project)notFound();
  const index=projects.findIndex(p=>p.slug===project.slug);const next=projects[(index+1)%projects.length];
  return <><Navbar/><main className="pb-24 pt-28"><section className="page-shell"><Link href="/#projects" className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[.14em] text-slate-500 hover:text-white"><ArrowLeft className="size-3.5"/>Back to selected work</Link><div className="mt-12 grid gap-10 lg:grid-cols-[1fr_.65fr]"><div><div className="flex items-center gap-3 mono text-[10px] uppercase tracking-[.14em] text-[#63d9ff]"><span>0{index+1}</span><span className="h-px w-8 bg-cyan-300/40"/><span>{project.category}</span></div><h1 className="display-title mt-6 text-balance">{project.title}</h1><p className="mt-5 text-lg font-medium text-slate-300">{project.subtitle}</p><p className="mt-7 max-w-3xl text-base leading-8 text-slate-400">{project.description}</p><div className="mt-8 flex flex-wrap gap-3"><a href={project.githubUrl} target="_blank" rel="noreferrer" className="button-primary"><Github className="size-4"/>Inspect repository <ArrowUpRight className="size-3.5"/></a><a href={siteConfig.resumeUrl} download className="button-secondary">Download resume</a></div></div><aside className="surface self-end rounded-2xl p-6"><span className="mono text-[9px] uppercase tracking-[.15em] text-slate-600">Verification record</span><div className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border hairline bg-[var(--line)]">{project.metrics.map(m=><div key={m.label} className="bg-[#0a0f17] p-4"><strong className="mono block text-lg text-white">{m.value}</strong><span className="mt-1 block text-[9px] uppercase tracking-wider text-slate-600">{m.label}</span></div>)}</div><p className="mt-4 text-[10px] leading-5 text-slate-600">Historical project evidence; not live production telemetry.</p></aside></div></section>
 
