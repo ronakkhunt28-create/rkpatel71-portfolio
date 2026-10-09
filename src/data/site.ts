@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
   email: "khuntronak5@gmail.com",
   github: "https://github.com/ronakkhunt28-create",
   linkedin: "https://www.linkedin.com/in/ronak-patel-72039b3ba",
-  url: "https://www.rkpatel71.com",
+  url: "https://rkpatel71-portfolio.vercel.app",
   resumeUrl: "/resume/Ronak_Patel_AI_Automation_Resume.pdf",
   availability: {
     status: "Available",

@@ -34,12 +34,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Optional third-party forwarder (e.g. Resend or Web3Forms) if configured via environment variables
+    // 3. No provider means no delivery: never acknowledge an unsent inquiry.
     const resendApiKey = process.env.RESEND_API_KEY;
     const recipientEmail = process.env.CONTACT_EMAIL_TO || "khuntronak5@gmail.com";
+    const senderEmail = process.env.CONTACT_EMAIL_FROM;
 
-    if (!resendApiKey && process.env.VERCEL_ENV === "production") {
-      console.error("Contact delivery is unavailable: RESEND_API_KEY is not configured.");
+    if (!resendApiKey || !senderEmail || /@resend\.dev\b/i.test(senderEmail)) {
       return NextResponse.json(
         { success: false, error: "Message delivery is unavailable. Please email directly." },
         { status: 503 }
@@ -55,7 +55,8 @@ export async function POST(request: Request) {
             Authorization: `Bearer ${resendApiKey}`,
           },
           body: JSON.stringify({
-            from: "Portfolio Contact <onboarding@resend.dev>",
+            from: senderEmail,
+            reply_to: email,
             to: recipientEmail,
             subject: `[Portfolio Inquiry] ${inquiryType || "General"} from ${name}`,
             text: `Name: ${name}\nEmail: ${email}\nOrganization: ${organization || "N/A"}\nType: ${
@@ -75,12 +76,9 @@ export async function POST(request: Request) {
       }
     }
 
-    // Always log receipt on server
-    console.log(`[Contact Submission] from ${name} <${email}> regarding ${inquiryType}`);
-
     return NextResponse.json({
       success: true,
-      message: "Thank you for reaching out! Your message has been received.",
+      message: "Your message has been accepted by the email provider.",
     });
   } catch (error) {
     console.error("Contact API error:", error);

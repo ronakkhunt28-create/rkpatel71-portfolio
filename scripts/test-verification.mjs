@@ -56,7 +56,7 @@ assert(projectDataContent.includes("https://github.com/ronakkhunt28-create"), "V
 // 4. Check Domain Configuration
 const siteDataPath = path.resolve("./src/data/site.ts");
 const siteDataContent = fs.readFileSync(siteDataPath, "utf-8");
-assert(siteDataContent.includes("https://www.rkpatel71.com"), "Target canonical domain https://www.rkpatel71.com configured");
+assert(siteDataContent.includes("https://rkpatel71-portfolio.vercel.app"), "Permanent Vercel canonical URL configured");
 assert(siteDataContent.includes("khuntronak5@gmail.com"), "Verified email khuntronak5@gmail.com configured");
 
 console.log("\n=================================================");

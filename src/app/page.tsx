@@ -28,7 +28,10 @@ export default function HomePage() {
         <ProcessFlow />
         <SecondaryProjects />
         <Experience />
-        <Contact />
+        <Contact emailDeliveryAvailable={Boolean(
+          process.env.RESEND_API_KEY && process.env.CONTACT_EMAIL_FROM &&
+          !/@resend\.dev\b/i.test(process.env.CONTACT_EMAIL_FROM)
+        )} />
       </main>
       <Footer />
     </>

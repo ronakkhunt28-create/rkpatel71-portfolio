@@ -10,7 +10,7 @@ import { Footer } from "@/components/layout/Footer";
 
 interface Props{params:Promise<{slug:string}>}
 export async function generateStaticParams(){return projects.map(p=>({slug:p.slug}))}
-export async function generateMetadata({params}:Props):Promise<Metadata>{const {slug}=await params;const p=projects.find(x=>x.slug===slug);if(!p)return{title:"Project Not Found"};return{title:`${p.title} Case Study`,description:p.description,openGraph:{title:`${p.title} — ${p.subtitle}`,description:p.description,url:`${siteConfig.url}/projects/${p.slug}`,images:p.screenshots[0]?[{url:p.screenshots[0].src}]:[]}}}
+export async function generateMetadata({params}:Props):Promise<Metadata>{const {slug}=await params;const p=projects.find(x=>x.slug===slug);if(!p)return{title:"Project Not Found"};return{title:`${p.title} Case Study`,description:p.description,alternates:{canonical:`${siteConfig.url}/projects/${p.slug}`},twitter:{card:"summary_large_image",title:`${p.title} Case Study`,description:p.description,images:p.screenshots[0]?[p.screenshots[0].src]:[]},openGraph:{title:`${p.title} — ${p.subtitle}`,description:p.description,url:`${siteConfig.url}/projects/${p.slug}`,images:p.screenshots[0]?[{url:p.screenshots[0].src}]:[]}}}
 
 export default async function ProjectCaseStudyPage({params}:Props){
  const {slug}=await params;const project=projects.find(p=>p.slug===slug);if(!project)notFound();

@@ -6,8 +6,8 @@ const routesToTest = [
   { path: "/projects/ai-lead-management-agent", expectedStatus: 200, contains: ["AI Lead Management Agent", "68/68", "Deterministic 7-Factor"] },
   { path: "/projects/opsforge-ai", expectedStatus: 200, contains: ["OpsForge AI", "32/32", "5 Swarm Agents", "SHA-256"] },
   { path: "/projects/bizhunter-mis", expectedStatus: 200, contains: ["BizHunter Inventory MIS", "PySide6", "SQLAlchemy"] },
-  { path: "/robots.txt", expectedStatus: 200, contains: ["User-Agent: *", "https://www.rkpatel71.com/sitemap.xml"] },
-  { path: "/sitemap.xml", expectedStatus: 200, contains: ["https://www.rkpatel71.com", "supportpilot-ai", "opsforge-ai"] },
+  { path: "/robots.txt", expectedStatus: 200, contains: ["User-Agent: *", "https://rkpatel71-portfolio.vercel.app/sitemap.xml"] },
+  { path: "/sitemap.xml", expectedStatus: 200, contains: ["https://rkpatel71-portfolio.vercel.app", "supportpilot-ai", "opsforge-ai"] },
   { path: "/resume/Ronak_Patel_AI_Automation_Resume.pdf", expectedStatus: 200, isBinary: true },
 ];
 
@@ -106,11 +106,11 @@ async function run() {
       message: "We are interested in speaking with Ronak about an AI Automation role.",
     });
     const parsed = JSON.parse(validRes.body);
-    if (validRes.statusCode === 200 && parsed.success === true) {
-      console.log("[PASS] POST /api/contact (Valid Submission) -> HTTP 200 Success");
+    if (validRes.statusCode === 503 && parsed.success === false) {
+      console.log("[PASS] POST /api/contact (No Provider) -> HTTP 503, no misleading success");
       passed++;
     } else {
-      console.error(`[FAIL] POST /api/contact -> Expected success, got ${validRes.body}`);
+      console.error(`[FAIL] POST /api/contact -> Expected unavailable response, got ${validRes.body}`);
     }
   } catch (err) {
     console.error(`[FAIL] POST /api/contact -> ${err.message}`);

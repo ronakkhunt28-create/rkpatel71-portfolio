@@ -1,9 +1,9 @@
 # Ronak Patel — Personal Web Portfolio
 
 > Production portfolio website for **Ronak Patel**, AI Automation & Agentic Systems Developer.  
-> Target Production Domain: **[https://www.rkpatel71.com](https://www.rkpatel71.com)**
+> Target Production Domain: **[https://rkpatel71-portfolio.vercel.app](https://rkpatel71-portfolio.vercel.app)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2%20App%20Router-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.27%20App%20Router-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.169-black?style=flat-square&logo=three.js)](https://threejs.org/)
@@ -159,44 +159,35 @@ npm run start
 
 ---
 
-## Deployment to Vercel & Custom Domain (`rkpatel71.com`)
+## Deployment to the existing Vercel project
 
-### 1. Push to GitHub
-```bash
-git init
-git add .
-git commit -m "feat: initial production portfolio for Ronak Patel"
-git branch -M main
-git remote add origin https://github.com/ronakkhunt28-create/rkpatel71-portfolio.git
-git push -u origin main
-```
+Permanent public URL: **https://rkpatel71-portfolio.vercel.app**
 
-### 2. Connect Repository in Vercel
-1. Log in to [Vercel Dashboard](https://vercel.com).
-2. Click **Add New** &rarr; **Project**.
-3. Import `rkpatel71-portfolio`.
-4. Framework Preset: **Next.js** (automatically detected).
-5. Click **Deploy**.
+Use the existing `ronak-patel/rkpatel71-portfolio` project connected to
+`ronakkhunt28-create/rkpatel71-portfolio`. Do not create another project.
+Production follows `main`; back up the previous production commit before integration.
+The repository root is the application root; Next.js default install/build settings apply.
+No custom domain, paid service, or environment variables are required for this launch.
 
-### 3. Connect Custom Domain (`rkpatel71.com`)
-1. In Vercel Project Settings, navigate to **Domains**.
-2. Add `www.rkpatel71.com` as the primary production domain.
-3. Add `rkpatel71.com` configured to automatically redirect to `https://www.rkpatel71.com`.
-4. Update your DNS registrar records with the values provided by Vercel:
-   - **Type A**: `@` &rarr; `76.76.21.21`
-   - **Type CNAME**: `www` &rarr; `cname.vercel-dns.com`
-5. Once DNS propagates (typically within 5–30 minutes), Vercel automatically issues an SSL certificate for HTTPS.
+Run `npm run lint`, `npx tsc --noEmit`, `npm run build`, and
+`npm audit --omit=dev`. Start `npm start` before `npm test`.
+Run `scripts/browser_qa.py` for browser regression checks and
+`node scripts/test-public-site.mjs` for canonical, asset, and contact-mode checks.
+Both accept the live base URL as their first argument.
 
----
+## Optional future email provider
 
-## Environment Variables (Optional)
+Contact Me opens `mailto:khuntronak5@gmail.com`; Copy Email Address writes the address
+to the clipboard with accessible confirmation and a manual fallback.
+The submission form is hidden when server-side provider settings are absent.
+The API returns HTTP 503 instead of a false success.
 
-Create a `.env.local` file for custom form handlers if desired:
-```env
-NEXT_PUBLIC_SITE_URL=https://www.rkpatel71.com
-# RESEND_API_KEY=re_...
-# CONTACT_EMAIL_TO=khuntronak5@gmail.com
-```
+Resend remains optional: configure server-only `RESEND_API_KEY`,
+`CONTACT_EMAIL_FROM` (a verified non-development sender), and `CONTACT_EMAIL_TO`.
+Never place actual keys in source, chat, commits, logs, or a NEXT_PUBLIC variable.
+Redeploy after environment changes so the server-rendered form availability updates.
+Provider acceptance is not proof of inbox delivery; test real delivery before enabling
+the form for visitors. The canonical URL is centralized in `src/data/site.ts`.
 
 ---
 
@@ -205,4 +196,4 @@ NEXT_PUBLIC_SITE_URL=https://www.rkpatel71.com
 - **Email**: [khuntronak5@gmail.com](mailto:khuntronak5@gmail.com)
 - **LinkedIn**: [https://www.linkedin.com/in/ronak-patel-72039b3ba](https://www.linkedin.com/in/ronak-patel-72039b3ba)
 - **GitHub**: [https://github.com/ronakkhunt28-create](https://github.com/ronakkhunt28-create)
-- **Domain**: [https://www.rkpatel71.com](https://www.rkpatel71.com)
+- **Domain**: [https://rkpatel71-portfolio.vercel.app](https://rkpatel71-portfolio.vercel.app)

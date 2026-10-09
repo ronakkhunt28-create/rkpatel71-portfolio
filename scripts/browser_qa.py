@@ -22,6 +22,8 @@ async def run_qa():
         print("\n--- 1. Testing Desktop Experience (1440x900) ---", flush=True)
         context = await browser.new_context(viewport={"width": 1440, "height": 900})
         page = await context.new_page()
+        runtime_errors = []
+        page.on("pageerror", lambda error: runtime_errors.append(str(error)))
 
         # Navigate to homepage
         await page.goto(f"{BASE_URL}/", wait_until="domcontentloaded")
@@ -88,25 +90,16 @@ async def run_qa():
         await contact_section.scroll_into_view_if_needed()
         await page.wait_for_timeout(500)
 
-        print("\n--- Testing Contact Form Submission ---", flush=True)
-        await page.fill("#name", "Elena Rostova")
-        await page.fill("#email", "elena.rostova@techventures.io")
-        await page.fill("#organization", "TechVentures Global")
-        await page.select_option("#inquiryType", "Role Opportunity")
-        await page.fill("#message", "We are looking for an AI Automation Developer to lead our backend agent pipelines.")
-        
-        btn = page.get_by_role("button", name="Send Message")
-        async with page.expect_response("**/api/contact") as response_info:
-            await btn.click()
-        response = await response_info.value
-        resp_json = await response.json()
-        print(f"[API RESPONSE] status={response.status}, body={resp_json}", flush=True)
-        
-        await page.wait_for_timeout(1000)
-        success_visible = await page.locator("text=Message Sent Successfully").is_visible()
-        assert success_visible, "Success banner not visible after submit"
-        print("[PASS] Contact Form submitted & verified success banner displayed", flush=True)
-        await page.screenshot(path=os.path.join(SCREENSHOT_DIR, "desktop-04-contact-success.png"))
+        print("\\n--- Testing Provider-Free Contact ---", flush=True)
+        assert await contact_section.locator("form").count() == 0, "Unavailable form must be hidden"
+        email_link = contact_section.get_by_role("link", name="Contact Me", exact=True)
+        assert await email_link.get_attribute("href") == "mailto:khuntronak5@gmail.com"
+        await context.grant_permissions(["clipboard-read", "clipboard-write"])
+        await contact_section.get_by_role("button", name="Copy Email Address").click()
+        assert await contact_section.get_by_role("status").inner_text() == "Email address copied."
+        assert await page.evaluate("navigator.clipboard.readText()") == "khuntronak5@gmail.com"
+        print("[PASS] Mailto link, hidden form, copy confirmation and clipboard contents", flush=True)
+        await page.screenshot(path=os.path.join(SCREENSHOT_DIR, "desktop-04-contact.png"))
 
         # Test Case Study Page Navigation
         print("\n--- Testing Case Study Pages Navigation ---", flush=True)
@@ -124,6 +117,7 @@ async def run_qa():
             await page.wait_for_timeout(500)
             print(f"[PASS] Breadcrumb back to Home confirmed from {slug}", flush=True)
 
+        assert not runtime_errors, f"Desktop runtime errors: {runtime_errors}"
         await context.close()
 
         # ----------------------------------------------------
@@ -145,6 +139,8 @@ async def run_qa():
             user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
         )
         mobile_page = await mobile_context.new_page()
+        mobile_errors = []
+        mobile_page.on("pageerror", lambda error: mobile_errors.append(str(error)))
 
         await mobile_page.goto(f"{BASE_URL}/", wait_until="domcontentloaded")
         await mobile_page.wait_for_timeout(1000)
@@ -182,6 +178,19 @@ async def run_qa():
         await mobile_page.wait_for_timeout(300)
         await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-03-projects.png"))
 
+        await mobile_page.locator("#contact").scroll_into_view_if_needed()
+        await mobile_context.grant_permissions(["clipboard-read", "clipboard-write"])
+        mobile_contact = mobile_page.locator("#contact")
+        assert await mobile_contact.locator("form").count() == 0
+        assert await mobile_contact.get_by_role("link", name="Contact Me", exact=True).get_attribute("href") == "mailto:khuntronak5@gmail.com"
+        await mobile_contact.get_by_role("button", name="Copy Email Address").click()
+        assert await mobile_page.evaluate("navigator.clipboard.readText()") == "khuntronak5@gmail.com"
+        await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-04-contact.png"))
+        print("[PASS] Mobile contact email/copy interactions", flush=True)
+        await mobile_page.goto(f"{BASE_URL}/projects/supportpilot-ai", wait_until="networkidle")
+        assert not await mobile_page.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+        await mobile_page.screenshot(path=os.path.join(SCREENSHOT_DIR, "mobile-case-study-supportpilot-ai.png"))
+        assert not mobile_errors, f"Mobile runtime errors: {mobile_errors}"
         await mobile_context.close()
 
         # ----------------------------------------------------
